@@ -2,11 +2,11 @@ package com.jifuwei.ac.web.valid.service.impl;
 
 import com.jifuwei.ac.web.valid.dao.ACValidTestDao;
 import com.jifuwei.ac.web.valid.data.po.ACValidTestPO;
+import com.jifuwei.ac.web.valid.data.vo.ACValidTestVO;
 import com.jifuwei.ac.web.valid.service.ACValidTestService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * 测试test接口实现类
@@ -19,7 +19,8 @@ public class ACValidTestServiceImpl implements ACValidTestService {
     private ACValidTestDao dataDao = null;
 
     @Override
-    public List<ACValidTestPO> getAll() {
-        return dataDao.getAll();
+    public void add(ACValidTestVO vo) {
+        ACValidTestPO po = vo.toPO();
+        dataDao.add(po);
     }
 }
