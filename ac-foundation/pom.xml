@@ -15,9 +15,17 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <ac.foundation.version>1.0-SNAPSHOT</ac.foundation.version>
     </properties>
 
     <dependencies>
+        <!-- 依赖子项目 -->
+        <dependency>
+            <groupId>com.jifuwei</groupId>
+            <artifactId>ac-util</artifactId>
+            <version>${ac.foundation.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

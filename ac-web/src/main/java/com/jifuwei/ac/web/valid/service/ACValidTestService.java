@@ -7,5 +7,11 @@ import com.jifuwei.ac.web.valid.data.vo.ACValidTestVO;
  * Created by JFW on 2016/10/7.
  */
 public interface ACValidTestService {
-    void add(ACValidTestVO vo);
+    void save(ACValidTestVO vo);
+
+    void delete(ACValidTestVO vo);
+
+    void update(ACValidTestVO vo);
+
+    ACValidTestVO find(ACValidTestVO vo);
 }

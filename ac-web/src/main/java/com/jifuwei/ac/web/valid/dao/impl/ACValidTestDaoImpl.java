@@ -14,7 +14,7 @@ public class ACValidTestDaoImpl extends IDaoImpl<ACValidTestPO> implements ACVal
     public ACValidTestDaoImpl() {
         super();
         this.tableName = "ac_valid_test";
-        this.tableKeys = new String[] {"username"};
+        this.tableKeys = new String[] {"ac_id"};
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.jifuwei.ac.web.valid.service.impl;
 
+import com.jifuwei.ac.foundation.error.ACErrorMsg;
+import com.jifuwei.ac.foundation.exception.ACServiceException;
 import com.jifuwei.ac.web.valid.dao.ACValidTestDao;
 import com.jifuwei.ac.web.valid.data.po.ACValidTestPO;
 import com.jifuwei.ac.web.valid.data.vo.ACValidTestVO;
@@ -19,8 +21,36 @@ public class ACValidTestServiceImpl implements ACValidTestService {
     private ACValidTestDao dataDao = null;
 
     @Override
-    public void add(ACValidTestVO vo) {
-        ACValidTestPO po = vo.toPO();
-        dataDao.add(po);
+    public void save(ACValidTestVO vo) {
+        ACValidTestPO po = dataDao.getSingle(vo.getPrimaryKeys());
+        if (po != null) {
+            throw new ACServiceException(ACErrorMsg.ERROR_DUMPLICATE_PRIMARY_KEY);
+        }
+        po = vo.toPO();
+        dataDao.save(po);
+    }
+
+    @Override
+    public void delete(ACValidTestVO vo) {
+        dataDao.delete(vo.getPrimaryKeys());
+    }
+
+    @Override
+    public void update(ACValidTestVO vo) {
+        ACValidTestPO po = dataDao.getSingle(vo.getPrimaryKeys());
+        if (po == null) {
+            throw new ACServiceException(ACErrorMsg.ERROR_RECORD_NOT_EXISTS);
+        }
+        po = vo.toPO();
+        dataDao.update(po);
+    }
+
+    @Override
+    public ACValidTestVO find(ACValidTestVO vo) {
+        ACValidTestPO po = dataDao.getSingle(vo.getPrimaryKeys());
+        if (po == null) {
+            throw new ACServiceException(ACErrorMsg.ERROR_RECORD_NOT_EXISTS);
+        }
+        return po.toVO();
     }
 }

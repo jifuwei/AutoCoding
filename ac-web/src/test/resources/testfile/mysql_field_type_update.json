@@ -1,0 +1,22 @@
+{
+  "acId": "2",
+  "mysqlVarchar": "nihao",
+  "mysqlChar": "dingchang",
+  "mysqlBlob": "erjinzhixingshichangwenbenshuju",
+  "mysqlText": "changwenbenshuju",
+  "mysqlInt": "22",
+  "mysqlTinyint": "1",
+  "mysqlSmallint": "333",
+  "mysqlMediumint": "4444",
+  "mysqlBigint": "55555",
+  "mysqlBit": "false",
+  "mysqlFloat": "11.11",
+  "mysqlDouble": "2222.2222",
+  "mysqlDecimal": "44444444.44444444",
+  "mysqlBoolean": "false",
+  "mysqlDate": "2016-10-09",
+  "mysqlTime": "11:19:18",
+  "mysqlDatetime": "2016-10-09 11:19:18",
+  "mysqlTimestamp": "1475983527",
+  "mysqlYear": "2016"
+}

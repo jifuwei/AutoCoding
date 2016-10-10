@@ -9,7 +9,7 @@ import java.util.Map;
 @Repository
 public abstract interface IDao<Data> {
 
-	public abstract boolean add(Data paramData);
+	public abstract boolean save(Data paramData);
 
 	public abstract boolean batchAdd(List<Data> paramList);
 
