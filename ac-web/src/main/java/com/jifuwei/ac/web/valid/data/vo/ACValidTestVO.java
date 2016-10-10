@@ -1,7 +1,15 @@
 package com.jifuwei.ac.web.valid.data.vo;
 
+import com.jifuwei.ac.foundation.error.ACErrorMsg;
+import com.jifuwei.ac.foundation.exception.ACServiceException;
 import com.jifuwei.ac.web.valid.data.po.ACValidTestPO;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -14,16 +22,28 @@ import java.sql.Timestamp;
  * Created by JFW on 2016/10/6.
  */
 public class ACValidTestVO {
+
+    @NotBlank(message = "{ACValidTestVO.mysql_varchar.notblank}")
+    @Length(min = 1, max = 255, message = "{ACValidTestVO.mysql_varchar.length}")
     private String mysql_varchar;//字符串
+
+    @NotEmpty(message = "{ACValidTestVO.mysql_char.notempty}")
     private String mysql_char;//字符
+
+    @NotEmpty(message = "{ACValidTestVO.mysql_blob.notempty}")
     private String mysql_blob;//二进制大对象
     private String mysql_text;//文本
+
+    @Min(value = -2147483648, message = "{ACValidTestVO.mysql_int.min}")
+    @Max(value = 2147483647, message = "{ACValidTestVO.mysql_int.max}")
     private String mysql_int;//整形
     private String mysql_tinyint;//小整形
     private String mysql_smallint;//短整形
     private String mysql_mediumint;//中整形
     private String mysql_bigint;//大整形
     private String mysql_bit;//比特
+
+    @Digits(integer = 2, fraction = 2, message = "{ACValidTestVO.mysql_float.digits}")
     private String mysql_float;//浮点型
     private String mysql_double;//双精度型
     private String mysql_decimal;//小数
@@ -209,6 +229,7 @@ public class ACValidTestVO {
             po.setMysql_year(this.mysql_year);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            throw new ACServiceException(ACErrorMsg.ERROR_DATA_IS_MALFORM);
         }
 
         return po;

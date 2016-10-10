@@ -1,10 +1,13 @@
 package com.jifuwei.ac.foundation.error;
 
+import com.jifuwei.ac.foundation.data.ACResponseMsg;
+
 /**
  * 错误消息集合
  * Created by JFW on 2016/10/6.
  */
 public enum ACErrorMsg {
+    CALL_SUCCESS(0, "操作成功"),
     LOGIN_SUCCESS(40001, "登录成功"),
     USER_IS_NULL(40002, "用户不能为空"),
     PASSWORD_IS_NULL(40003, "密码不能为空"),
@@ -20,8 +23,6 @@ public enum ACErrorMsg {
     PASSWORD_RESET(40013, "初始密码，需重置"),
     PASSWORD_EXPIRES(40014, "密码过期请重置密码"),
     PASSWORD_IS_USED(40015, "密码在过去三次已经被使用"),
-
-    CALL_SUCCESS(40016, "操作成功"),
     ERROR_HTTP_REQUEST_IS_NOT_AVAILABLE(40017, "HTTP请求错误"),
     ERROR_REMOTE_SERVER_RETURN_ERROR(40018, "远程服务返回错误"),
     ERROR_RESOURCE_IS_NOT_READY(40019, "系统资源缺失"),
@@ -43,5 +44,12 @@ public enum ACErrorMsg {
     ACErrorMsg(int errcode, String errmsg) {
         this.errcode = errcode;
         this.errmsg = errmsg;
+    }
+
+    public ACResponseMsg toResponseMsg() {
+        ACResponseMsg acResponseMsg = new ACResponseMsg();
+        acResponseMsg.errcode = this.errcode;
+        acResponseMsg.errmsg = this.errmsg;
+        return acResponseMsg;
     }
 }

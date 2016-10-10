@@ -35,17 +35,11 @@ public class ACValidTestController {
             msg.errcode = ACErrorMsg.CALL_SUCCESS.errcode;
             msg.errmsg = ACErrorMsg.CALL_SUCCESS.errmsg;
         } catch (ACServiceException e) {
-            ACErrorMsg acErrorMsg = e.getAcErrorMsg();
-            msg.errcode = acErrorMsg.errcode;
-            msg.errmsg = acErrorMsg.errmsg;
+            msg = e.getAcErrorMsg().toResponseMsg();
         } catch (ACDaoException e) {
-            ACErrorMsg acErrorMsg = e.getAcErrorMsg();
-            msg.errcode = acErrorMsg.errcode;
-            msg.errmsg = acErrorMsg.errmsg;
+            msg = e.getAcErrorMsg().toResponseMsg();
         } catch (ACRuntimeException e) {
-            ACErrorMsg acErrorMsg = e.getAcErrorMsg();
-            msg.errcode = acErrorMsg.errcode;
-            msg.errmsg = acErrorMsg.errmsg;
+            msg = e.getAcErrorMsg().toResponseMsg();
         }
         return msg;
     }
