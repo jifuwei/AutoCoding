@@ -6,6 +6,7 @@ import com.jifuwei.ac.web.valid.data.po.ACValidTestPO;
 import org.springframework.stereotype.Repository;
 
 /**
+ * 测试dao接口实现类
  * Created by JFW on 2016/10/7.
  */
 @Repository("ACValidTestDaoImpl")

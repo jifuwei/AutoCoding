@@ -3,11 +3,19 @@ package com.jifuwei.ac.web.meta.dao.impl;
 import com.jifuwei.ac.foundation.dao.IDaoImpl;
 import com.jifuwei.ac.foundation.error.ACErrorMsg;
 import com.jifuwei.ac.foundation.exception.ACDaoException;
+import com.jifuwei.ac.util.db.MysqlUtil;
 import com.jifuwei.ac.web.meta.dao.ACDbMetaInfoDao;
+import com.jifuwei.ac.web.meta.data.ACDbColumnMetaInfoData;
+import com.jifuwei.ac.web.meta.data.ACDbExportedKeyMetaInfoData;
+import com.jifuwei.ac.web.meta.data.ACDbPrimaryKeyMetaInfoData;
+import com.jifuwei.ac.web.meta.data.ACDbTableMetaInfoData;
 import com.jifuwei.ac.web.meta.data.constant.DbMetaInfoConstant;
 import com.jifuwei.ac.web.meta.data.po.*;
+import com.jifuwei.ac.web.meta.util.AntDbUtil;
 import org.springframework.stereotype.Repository;
 
+import java.io.File;
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -53,15 +61,17 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
     }
 
     @Override
-    public List<ACDbTableMetaInfoPO> findDbTablesMetaInfo(String catalog, String schema, String tableName, String[] types) {
-        List<ACDbTableMetaInfoPO> tableMetaInfoList = new ArrayList<ACDbTableMetaInfoPO>();
-        ACDbTableMetaInfoPO tableMetaInfo = null;
+    public List<ACDbTableMetaInfoData> findDbTablesMetaInfo(String catalog, String schema, String tableName, String[] types) {
+        List<ACDbTableMetaInfoData> tableMetaInfoList = new ArrayList<ACDbTableMetaInfoData>();
+        ACDbTableMetaInfoData tableMetaInfo = null;
         DatabaseMetaData databaseMetaData = null;
+        Connection conn = null;
         try {
-            databaseMetaData = this.defaultJdbcTemplate.getDataSource().getConnection().getMetaData();
+            conn = MysqlUtil.getConnection();
+            databaseMetaData = conn.getMetaData();
             ResultSet rs = databaseMetaData.getTables(catalog, schema, tableName, types);
             while (rs.next()) {
-                tableMetaInfo = new ACDbTableMetaInfoPO();
+                tableMetaInfo = new ACDbTableMetaInfoData();
                 tableMetaInfo.setTableCat(rs.getString(DbMetaInfoConstant.TABLE_CAT));
                 tableMetaInfo.setTableSchem(rs.getString(DbMetaInfoConstant.TABLE_SCHEM));
                 tableMetaInfo.setTableName(rs.getString(DbMetaInfoConstant.TABLE_NAME));
@@ -81,20 +91,22 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
         } catch (SQLException e) {
             this.logger.debug(e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
+        } finally {
+            MysqlUtil.close(conn);
         }
         return null;
     }
 
     @Override
-    public List<ACDbColumnMetaInfoPO> findDbColumnsMetaInfo(String catalog, String schema, String tablename, String columnNamePattern) {
-        List<ACDbColumnMetaInfoPO> columnMetaInfoList = new ArrayList<ACDbColumnMetaInfoPO>();
-        ACDbColumnMetaInfoPO columnMetaInfo = null;
+    public List<ACDbColumnMetaInfoData> findDbColumnsMetaInfo(String catalog, String schema, String tablename, String columnNamePattern) {
+        List<ACDbColumnMetaInfoData> columnMetaInfoList = new ArrayList<ACDbColumnMetaInfoData>();
+        ACDbColumnMetaInfoData columnMetaInfo = null;
         DatabaseMetaData databaseMetaData = null;
         try {
             databaseMetaData = this.defaultJdbcTemplate.getDataSource().getConnection().getMetaData();
             ResultSet rs = databaseMetaData.getColumns(catalog, schema, tablename, columnNamePattern);
             while (rs.next()) {
-                columnMetaInfo = new ACDbColumnMetaInfoPO();
+                columnMetaInfo = new ACDbColumnMetaInfoData();
                 columnMetaInfo.setTableCat(DbMetaInfoConstant.TABLE_CAT);
                 columnMetaInfo.setTableSchem(rs.getString(DbMetaInfoConstant.TABLE_SCHEM));
                 columnMetaInfo.setTableName(rs.getString(DbMetaInfoConstant.TABLE_NAME));
@@ -113,7 +125,7 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
                 columnMetaInfo.setCharOctetLength(rs.getInt(DbMetaInfoConstant.CHAR_OCTET_LENGTH));
                 columnMetaInfo.setOrdinalPosition(rs.getInt(DbMetaInfoConstant.ORDINAL_POSITION));
                 columnMetaInfo.setIsNullable(rs.getString(DbMetaInfoConstant.IS_NULLABLE));
-                //columnMetaInfo.setScopeCatlog(rs.getString(DbMetaInfoConstant.SCOPE_CATLOG));
+                //columnMetaInfo.setScopeCatlog(rs.getString(DbMetaInfoConstant.SCOPE_CATLOG));//无法获取
                 columnMetaInfo.setScopeSchema(rs.getString(DbMetaInfoConstant.SCOPE_SCHEMA));
                 columnMetaInfo.setScopeTable(rs.getString(DbMetaInfoConstant.SCOPE_TABLE));
                 columnMetaInfo.setSourceDataType(rs.getShort(DbMetaInfoConstant.SOURCE_DATA_TYPE));
@@ -132,15 +144,15 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
     }
 
     @Override
-    public List<ACDbPrimaryKeyMetaInfoPO> findDbPrimaryKeysMetaInfo(String catalog, String schema, String tableName) {
-        List<ACDbPrimaryKeyMetaInfoPO> primaryKeyMetaInfoList = new ArrayList<ACDbPrimaryKeyMetaInfoPO>();
-        ACDbPrimaryKeyMetaInfoPO primaryKeyMetaInfo = null;
+    public List<ACDbPrimaryKeyMetaInfoData> findDbPrimaryKeysMetaInfo(String catalog, String schema, String tableName) {
+        List<ACDbPrimaryKeyMetaInfoData> primaryKeyMetaInfoList = new ArrayList<ACDbPrimaryKeyMetaInfoData>();
+        ACDbPrimaryKeyMetaInfoData primaryKeyMetaInfo = null;
         DatabaseMetaData databaseMetaData = null;
         try {
             databaseMetaData = this.defaultJdbcTemplate.getDataSource().getConnection().getMetaData();
             ResultSet rs = databaseMetaData.getPrimaryKeys(catalog, schema, tableName);
             while (rs.next()) {
-                primaryKeyMetaInfo = new ACDbPrimaryKeyMetaInfoPO();
+                primaryKeyMetaInfo = new ACDbPrimaryKeyMetaInfoData();
                 primaryKeyMetaInfo.setTableCat(rs.getString(DbMetaInfoConstant.TABLE_CAT));
                 primaryKeyMetaInfo.setTableSchem(rs.getString(DbMetaInfoConstant.TABLE_SCHEM));
                 primaryKeyMetaInfo.setTableName(rs.getString(DbMetaInfoConstant.TABLE_NAME));
@@ -161,15 +173,15 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
     }
 
     @Override
-    public List<ACDbExportedKeyMetaInfoPO> findDbExportedKeysMetaInfo(String catalog, String schema, String tableName) {
-        List<ACDbExportedKeyMetaInfoPO> exportedKeyMetaInfoList = new ArrayList<ACDbExportedKeyMetaInfoPO>();
-        ACDbExportedKeyMetaInfoPO exportedKeyMetaInfo = null;
+    public List<ACDbExportedKeyMetaInfoData> findDbExportedKeysMetaInfo(String catalog, String schema, String tableName) {
+        List<ACDbExportedKeyMetaInfoData> exportedKeyMetaInfoList = new ArrayList<ACDbExportedKeyMetaInfoData>();
+        ACDbExportedKeyMetaInfoData exportedKeyMetaInfo = null;
         DatabaseMetaData databaseMetaData = null;
         try {
             databaseMetaData = this.defaultJdbcTemplate.getDataSource().getConnection().getMetaData();
             ResultSet rs = databaseMetaData.getExportedKeys(catalog, schema, tableName);
             while (rs.next()) {
-                exportedKeyMetaInfo = new ACDbExportedKeyMetaInfoPO();
+                exportedKeyMetaInfo = new ACDbExportedKeyMetaInfoData();
                 exportedKeyMetaInfo.setPktableCat(rs.getString(DbMetaInfoConstant.PKTABLE_CAT));
                 exportedKeyMetaInfo.setPktableSchem(rs.getString(DbMetaInfoConstant.PKTABLE_SCHEM));
                 exportedKeyMetaInfo.setPktableName(rs.getString(DbMetaInfoConstant.PKTABLE_NAME));
@@ -195,5 +207,10 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
         return null;
+    }
+
+    @Override
+    public void saveDbInitScript(File dbInitScriptFile) {
+        AntDbUtil.getInstance("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1/autocoding?useUnicode=true&characterEncoding=utf-8", "root", "123456").excuteSqlScriptFile(dbInitScriptFile);
     }
 }

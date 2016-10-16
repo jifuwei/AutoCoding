@@ -28,7 +28,7 @@
         <property name="basenames">
             <list>
                 <!-- 在web环境中一定要定位到classpath 否则默认到当前web应用下找，不需要加文件后缀.properties  -->
-                <value>classpath:valid_message_zh_CN</value>
+                <value>classpath:valid_message/valid_message_zh_CN</value>
             </list>
         </property>
         <property name="useCodeAsDefaultMessage" value="false"/>
