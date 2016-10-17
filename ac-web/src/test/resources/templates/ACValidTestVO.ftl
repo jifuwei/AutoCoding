@@ -5,9 +5,10 @@ import com.jifuwei.ac.foundation.exception.ACServiceException;
 import com.jifuwei.ac.foundation.validation.EntityGroup;
 import com.jifuwei.ac.foundation.validation.PrimaryKeyGroup;
 import ${domainName}.${projectName}.${tableInfo.moduleName}.data.po.${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO;
+import org.hibernate.validator.constraints.NotEmpty;
 
-<#list tableInfo.getSET() as test>
-${test}
+<#list tableInfo.dbColumn2JavaImport() as import>
+${import}
 </#list>
 
 /**
@@ -16,7 +17,15 @@ ${test}
  */
 public class ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO {
 <#list tableInfo.columnMetaInfoList as column>
+    <#if tableInfo.isPrimaryField(column.columnName) == true>
+    @NotEmpty(message = "{ACValidTestVO.${dbColumn2JavaBeanTMM(column.columnName, "FIELD")}.NotEmpty}", groups = {PrimaryKeyGroup.class})
     private String ${dbColumn2JavaBeanTMM(column.columnName, "FIELD")}; //${column.remarks}
+    <#elseif column.isNullable == 'NO'>
+    @NotEmpty(message = "{ACValidTestVO.${dbColumn2JavaBeanTMM(column.columnName, "FIELD")}.NotEmpty}", groups = {EntityGroup.class})
+    private String ${dbColumn2JavaBeanTMM(column.columnName, "FIELD")}; //${column.remarks}
+    <#else>
+    private String ${dbColumn2JavaBeanTMM(column.columnName, "FIELD")}; //${column.remarks}
+    </#if>
 </#list>
 
 <#list tableInfo.columnMetaInfoList as column>
@@ -29,25 +38,9 @@ public class ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO {
     public ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO toPO() {
         ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO po = new ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO();
         try {
-            po.setAcId(StringUtils.isBlank(this.acId) ? null : Integer.parseInt(this.acId)); //注意：主键如果是自增长时需要考虑为空情况
-            po.setMysqlVarchar(this.mysqlVarchar);
-            po.setMysqlChar(this.mysqlChar);
-            po.setMysqlBlob(this.mysqlBlob.getBytes("UTF8"));
-            po.setMysqlText(this.mysqlText);
-            po.setMysqlInt(Integer.valueOf(this.mysqlInt));
-            po.setMysqlTinyint(Integer.valueOf(this.mysqlTinyint));
-            po.setMysqlSmallint(Integer.valueOf(this.mysqlSmallint));
-            po.setMysqlMediumint(Integer.valueOf(this.mysqlMediumint));
-            po.setMysqlBigint(new BigInteger(this.mysqlBigint));
-            po.setMysqlBit(Boolean.parseBoolean(this.mysqlBit));
-            po.setMysqlFloat(Float.valueOf(this.mysqlFloat));
-            po.setMysqlDouble(Double.valueOf(this.mysqlDouble));
-            po.setMysqlDecimal(new BigDecimal(this.mysqlDecimal));
-            po.setMysqlBoolean(Boolean.parseBoolean(this.mysqlBoolean));
-            po.setMysqlDate(Date.valueOf(this.mysqlDate));
-            po.setMysqlTime(Time.valueOf(this.mysqlTime));
-            po.setMysqlDatetime(Timestamp.valueOf(this.mysqlDatetime));
-            po.setMysqlYear(this.mysqlYear);
+            <#list tableInfo.columnMetaInfoList as column>
+            po.set${dbColumn2JavaBeanTMM(column.columnName, "GET_SET")}(${dbColumnVo2PoTMM(dbColumn2JavaBeanTMM(column.columnName, "GET_SET"), column.dataType)});
+            </#list>
         } catch (Exception e) {
             e.printStackTrace();
             throw new ACServiceException(ACErrorMsg.ERROR_DATA_IS_MALFORM);

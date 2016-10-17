@@ -1,5 +1,6 @@
 package com.jifuwei.ac.web.meta.data;
 
+import java.sql.Types;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -155,13 +156,91 @@ public class ACDbTableMetaInfoData {
         this.refGeneration = refGeneration;
     }
 
-    public Set<String> getSET() {
-        Set<String> test = new HashSet<>();
-        test.add("1111");
-        test.add("222");
-        test.add("1133311");
-        test.add("1144411");
-        test.add("1111");
-        return test;
+    /**
+     * 数据库字段转为java类型需要导入的包
+     * @return
+     */
+    public Set<String> dbColumn2JavaImport() {
+        Set<String> columnImportList = new HashSet<>();
+        String importStr = null;
+        for (ACDbColumnMetaInfoData column : this.columnMetaInfoList) {
+            importStr = sqlType2JavaTyp(column.getDataType());
+            if (importStr != null) {
+                columnImportList.add(importStr);
+            }
+        }
+        return columnImportList;
+    }
+
+    /**
+     * 判断表字段是否为主键
+     * @param columnName
+     * @return
+     */
+    public boolean isPrimaryField(String columnName) {
+        for (ACDbPrimaryKeyMetaInfoData primaryKey : primaryKeyMetaInfoList) {
+            if (primaryKey.getColumnName().equals(columnName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * java.sql.Types值转换为java对应的类
+     * @param sqlType
+     * @return
+     */
+    private String sqlType2JavaTyp(int sqlType) {
+        switch (sqlType) {
+            case Types.BIGINT:
+                return "import java.math.BigInteger;";
+            case Types.BINARY:
+                return null;
+            case Types.BIT:
+                return null;
+            case Types.BLOB:
+                return null;
+            case Types.CHAR:
+                return null;
+            case Types.CLOB:
+                return null;
+            case Types.DATE:
+                return "import java.sql.Date;";
+            case Types.DECIMAL:
+                return "import java.math.BigDecimal;";
+            case Types.DOUBLE:
+                return null;
+            case Types.FLOAT:
+                return null;
+            case Types.INTEGER:
+                return null;
+            case Types.JAVA_OBJECT:
+                return null;
+            case Types.LONGVARBINARY:
+                return null;
+            case Types.LONGVARCHAR:
+                return null;
+            case Types.NUMERIC:
+                return "import java.math.BigDecimal";
+            case Types.OTHER:
+                return null;
+            case Types.REAL:
+                return null;
+            case Types.SMALLINT:
+                return null;
+            case Types.TIME:
+                return "import java.sql.Time";
+            case Types.TIMESTAMP:
+                return "import java.sql.Timestamp";
+            case Types.TINYINT:
+                return null;
+            case Types.VARBINARY:
+                return null;
+            case Types.VARCHAR:
+                return null;
+            default:
+                return null;
+        }
     }
 }

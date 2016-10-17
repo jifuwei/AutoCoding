@@ -3,7 +3,7 @@ package com.jifuwei.ac.web.freemark;
 import com.jifuwei.ac.util.string.CamelCaseUtil;
 import com.jifuwei.ac.web.base.BaseTest;
 import com.jifuwei.ac.web.freemark.method.DbColumn2JavaBeanTMM;
-import com.jifuwei.ac.web.freemark.method.DbColumn2JavaImportTMM;
+import com.jifuwei.ac.web.freemark.method.DbColumnVo2PoTMM;
 import com.jifuwei.ac.web.meta.dao.ACDbMetaInfoDao;
 import com.jifuwei.ac.web.meta.data.ACDbColumnMetaInfoData;
 import com.jifuwei.ac.web.meta.data.ACDbExportedKeyMetaInfoData;
@@ -43,7 +43,7 @@ public class FreemarkTest extends BaseTest {
             cfg.setLogTemplateExceptions(false);
             cfg.setSharedVariable("projectName", "ac.web");
             cfg.setSharedVariable("dbColumn2JavaBeanTMM", new DbColumn2JavaBeanTMM());
-            cfg.setSharedVariable("dbColumn2JavaImportTMM", new DbColumn2JavaImportTMM());
+            cfg.setSharedVariable("dbColumnVo2PoTMM", new DbColumnVo2PoTMM());
             Template template = null;
 
             String domainName = "com.jifuwei";

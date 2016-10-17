@@ -39,7 +39,6 @@ public class DbColumn2JavaBeanTMM implements TemplateMethodModelEx {
         } else if (String.valueOf(args.get(1)).equals(GET_SET)) {
             return CamelCaseUtil.toCapitalizeCamelCase(String.valueOf(args.get(0)));
         }
-        System.out.println("111");
         return "";
     }
 }
