@@ -39,7 +39,7 @@ public class ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO {
         ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO po = new ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO();
         try {
             <#list tableInfo.columnMetaInfoList as column>
-            po.set${dbColumn2JavaBeanTMM(column.columnName, "GET_SET")}(${dbColumnVo2PoTMM(dbColumn2JavaBeanTMM(column.columnName, "GET_SET"), column.dataType)});
+            po.set${dbColumn2JavaBeanTMM(column.columnName, "GET_SET")}(${dbColumnVo2PoTMM(dbColumn2JavaBeanTMM(column.columnName, "FIELD"), column.dataType)});
             </#list>
         } catch (Exception e) {
             e.printStackTrace();
