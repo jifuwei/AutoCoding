@@ -3,6 +3,7 @@ package com.jifuwei.ac.web.common.error;
 import com.jifuwei.ac.foundation.error.ACErrorMsg;
 
 /**
+ * 错误集合类
  * Created by JFW on 2016/10/16.
  */
 public class ACWebErrorMsg extends ACErrorMsg {
