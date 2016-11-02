@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ACConfigTemplatePackageVO {
     private String package_id;//套餐编码
+    private String package_name;//套餐名称
     private String package_desc;//套餐描述
     private String is_available;//是否可用
 
@@ -18,6 +19,14 @@ public class ACConfigTemplatePackageVO {
 
     public void setPackage_id(String package_id) {
         this.package_id = package_id;
+    }
+
+    public String getPackage_name() {
+        return package_name;
+    }
+
+    public void setPackage_name(String package_name) {
+        this.package_name = package_name;
     }
 
     public String getPackage_desc() {
@@ -43,6 +52,7 @@ public class ACConfigTemplatePackageVO {
     public ACConfigTemplatePackagePO toPO() {
         ACConfigTemplatePackagePO po = new ACConfigTemplatePackagePO();
         po.setPackage_id(StringUtils.isBlank(this.package_id) ? null : Integer.parseInt(this.package_id));
+        po.setPackage_name(this.package_name);
         po.setPackage_desc(this.package_desc);
         po.setIs_available(Integer.valueOf(this.is_available));
 

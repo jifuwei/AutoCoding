@@ -1,51 +1,51 @@
-package com.jifuwei.ac.web.config.data.po;
+package com.jifuwei.ac.web.meta.data.po;
 
 import java.sql.Timestamp;
 
 /**
- * 模板套餐信息Data
+ * 应用表信息PO
  * Created by JFW on 2016/11/2.
  */
-public class ACConfigTemplatePackagePO {
-    private Integer package_id;//套餐编码
-    private String package_name;//套餐名称
-    private String package_desc;//套餐描述
-    private Integer is_available;//是否可用
+public class ACMetaApplicationTablePO {
+    private Integer app_table_id;//应用表编码
+    private Integer app_id;//应用编码
+    private String app_table_name;//应用表名称
+    private String app_table_remarks;//应用表备注
     private Timestamp create_time;//创建时间
     private String create_by;//创建者
     private Timestamp update_time;//更新时间
     private String update_by;//更新者
 
-    public Integer getPackage_id() {
-        return package_id;
+    public Integer getApp_table_id() {
+        return app_table_id;
     }
 
-    public void setPackage_id(Integer package_id) {
-        this.package_id = package_id;
+    public void setApp_table_id(Integer app_table_id) {
+        this.app_table_id = app_table_id;
     }
 
-    public String getPackage_name() {
-        return package_name;
+    public Integer getApp_id() {
+        return app_id;
     }
 
-    public void setPackage_name(String package_name) {
-        this.package_name = package_name;
+    public void setApp_id(Integer app_id) {
+        this.app_id = app_id;
     }
 
-    public String getPackage_desc() {
-        return package_desc;
+    public String getApp_table_name() {
+        return app_table_name;
     }
 
-    public void setPackage_desc(String package_desc) {
-        this.package_desc = package_desc;
+    public void setApp_table_name(String app_table_name) {
+        this.app_table_name = app_table_name;
     }
 
-    public Integer getIs_available() {
-        return is_available;
+    public String getApp_table_remarks() {
+        return app_table_remarks;
     }
 
-    public void setIs_available(Integer is_available) {
-        this.is_available = is_available;
+    public void setApp_table_remarks(String app_table_remarks) {
+        this.app_table_remarks = app_table_remarks;
     }
 
     public Timestamp getCreate_time() {

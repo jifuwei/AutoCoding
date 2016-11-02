@@ -8,6 +8,7 @@ import java.sql.Timestamp;
  */
 public class ACConfigTemplatePackageData {
     private Integer package_id;//套餐编码
+    private String package_name;//套餐名称
     private String package_desc;//套餐描述
     private Integer is_available;//是否可用
     private Timestamp create_time;//创建时间
@@ -21,6 +22,14 @@ public class ACConfigTemplatePackageData {
 
     public void setPackage_id(Integer package_id) {
         this.package_id = package_id;
+    }
+
+    public String getPackage_name() {
+        return package_name;
+    }
+
+    public void setPackage_name(String package_name) {
+        this.package_name = package_name;
     }
 
     public String getPackage_desc() {
