@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="bb64f6be-1e62-4e44-bd16-63435c77c137" activeEnvironment="Default" name="AutoCoding" soapui-version="5.2.1" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" id="781b4b3d-8a4f-48ea-8916-8d8fefc0b2eb" wadlVersion="http://wadl.dev.java.net/2009/02" name="http://localhost:8080" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache/><con:endpoints><con:endpoint>http://localhost:8080</con:endpoint></con:endpoints><con:resource name="delete.do" path="/ac-web/valid/test/delete.do" id="a29f437b-7f29-4c43-8fd8-56ea9840e196"><con:settings/><con:parameters/><con:method name="Method 1" id="f9642be1-e544-4b9b-90cb-e0df3c13861d" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:del="http://localhost/ac-web/valid/test/delete.do">del:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="Request 1" id="a314aa5d-5347-44be-acae-9b984153b940" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+  "acId": "2"
+}</con:request><con:originalUri>http://localhost/ac-web/valid/test/delete.do</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="save.do" path="/ac-web/valid/test/save.do" id="98154edd-7840-4c1a-9d9c-02233a297782"><con:settings/><con:parameters/><con:method name="Method 1" id="77e1d605-221b-449e-8f3d-4144ff1e8839" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:save="http://localhost/ac-web/valid/test/save.do">save:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="6b537506-ba74-4e22-a5c7-990e93a8561c" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+  "mysqlVarchar": "nihao",
+  "mysqlChar": "dingchang",
+  "mysqlBlob": "erjinzhixingshichangwenbenshuju",
+  "mysqlText": "changwenbenshuju",
+  "mysqlInt": "22",
+  "mysqlTinyint": "1",
+  "mysqlSmallint": "333",
+  "mysqlMediumint": "4444",
+  "mysqlBigint": "55555",
+  "mysqlBit": "false",
+  "mysqlFloat": "11.11",
+  "mysqlDouble": "2222.2222",
+  "mysqlDecimal": "44444444.44444444",
+  "mysqlBoolean": "false",
+  "mysqlDate": "2016-10-09",
+  "mysqlTime": "11:19:18",
+  "mysqlDatetime": "2016-10-09 11:19:18",
+  "mysqlTimestamp": "1475983527",
+  "mysqlYear": "2016"
+}</con:request><con:originalUri>http://localhost/ac-web/valid/test/save.do</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="update.do" path="/ac-web/valid/test/update.do" id="1a0243d1-9ab0-47a9-9ac9-7219ccd180ac"><con:settings/><con:parameters/><con:method name="Method 1" id="f5de2754-4e8e-45e8-8d54-01c75d1aaf6c" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:upd="http://localhost/ac-web/valid/test/update.do">upd:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="0f8dfa21-60ba-4ef8-a782-14b2204fe09d" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+  "acId": "3",
+  "mysqlVarchar": "nihao",
+  "mysqlChar": "dingchang",
+  "mysqlBlob": "erjinzhixingshichangwenbenshuju",
+  "mysqlText": "changwenbenshuju",
+  "mysqlInt": "212",
+  "mysqlTinyint": "1",
+  "mysqlSmallint": "333",
+  "mysqlMediumint": "4444",
+  "mysqlBigint": "55555",
+  "mysqlBit": "false",
+  "mysqlFloat": "11.11",
+  "mysqlDouble": "2222.2222",
+  "mysqlDecimal": "44444444.44444444",
+  "mysqlBoolean": "false",
+  "mysqlDate": "2016-10-09",
+  "mysqlTime": "11:19:18",
+  "mysqlDatetime": "2016-10-09 11:19:18",
+  "mysqlTimestamp": "1475983527",
+  "mysqlYear": "2016"
+}</con:request><con:originalUri>http://localhost/ac-web/valid/test/update.do</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="find.do" path="/ac-web/valid/test/find.do" id="25d971b7-68d6-4462-988c-6c502e73a412"><con:settings/><con:parameters/><con:method name="Method 1" id="47ff3228-a2ce-446b-8094-b533647041b4" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>400</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:find="http://localhost/ac-web/valid/test/find.do">find:Response</con:element></con:representation><con:request name="Request 1" id="68ef7bef-598f-454d-aae3-fa97edd98c77" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+  "acId": "11"
+}</con:request><con:originalUri>http://localhost/ac-web/valid/test/find.do</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
