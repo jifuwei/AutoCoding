@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
- * 模板文件信息VO
+ * 模板文件信息VO11
  * Created by JFW on 2016/11/2.
  */
 public class ACConfigTemplateFileVO {
