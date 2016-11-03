@@ -13,6 +13,7 @@ public class ACMetaApplicationPO {
     private String group_id;//组织标识
     private String app_db_script;//数据库脚本文件
     private Integer package_id;//模板套餐编码
+    private Integer datasource_id;//数据源编码
     private Timestamp create_time;//创建时间
     private String create_by;//创建者
     private Timestamp update_time;//更新时间
@@ -64,6 +65,14 @@ public class ACMetaApplicationPO {
 
     public void setPackage_id(Integer package_id) {
         this.package_id = package_id;
+    }
+
+    public Integer getDatasource_id() {
+        return datasource_id;
+    }
+
+    public void setDatasource_id(Integer datasource_id) {
+        this.datasource_id = datasource_id;
     }
 
     public Timestamp getCreate_time() {

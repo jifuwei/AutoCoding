@@ -1,5 +1,6 @@
 package com.jifuwei.ac.web.meta.util;
 
+import org.apache.log4j.Logger;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.SQLExec;
 import org.apache.tools.ant.types.EnumeratedAttribute;
@@ -11,6 +12,7 @@ import java.io.File;
  * Created by JFW on 2016/10/13.
  */
 public class AntDbUtil {
+    private static final Logger logger = Logger.getLogger(AntDbUtil.class);
 
     private String driverClass;
     private String url;
@@ -33,6 +35,7 @@ public class AntDbUtil {
         sqlExec.setUrl(url);
         sqlExec.setUserid(username);
         sqlExec.setPassword(password);
+        sqlExec.setEncoding("UTF8");
     }
 
     public static AntDbUtil getInstance(String driverClass, String url, String username, String password) {
@@ -43,6 +46,10 @@ public class AntDbUtil {
     }
 
     public void excuteSqlScriptFile(File file) {
+        logger.info("driverClass: " + driverClass);
+        logger.info("url: " + url);
+        logger.info("username: " + username);
+        logger.info("password: " + password);
         sqlExec.setSrc(file);
         sqlExec.setOnerror((SQLExec.OnError) (EnumeratedAttribute.getInstance(SQLExec.OnError.class, "abort")));
         sqlExec.setPrint(true);

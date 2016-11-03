@@ -8,4 +8,6 @@ import com.jifuwei.ac.web.meta.data.vo.ACMetaApplicationVO;
  */
 public interface ACMetaApplicationService {
     void save(ACMetaApplicationVO vo);
+
+    void initAppMetaInfoFromDbScript(ACMetaApplicationVO vo);
 }

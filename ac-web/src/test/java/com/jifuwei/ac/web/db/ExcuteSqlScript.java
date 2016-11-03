@@ -15,14 +15,14 @@ public class ExcuteSqlScript {
         try {
             SQLExec sqlExec = new SQLExec();
             String driverClass = "com.mysql.jdbc.Driver";
-            String url = "jdbc:mysql://127.0.0.1/autocoding?useUnicode=true&characterEncoding=utf-8";
+            String url = "jdbc:mysql://127.0.0.1/ac?useUnicode=true&characterEncoding=utf-8";
             String username = "root";
             String password = "123456";
             sqlExec.setDriver(driverClass);
             sqlExec.setUrl(url);
             sqlExec.setUserid(username);
             sqlExec.setPassword(password);
-            sqlExec.setSrc(new File("C:\\Users\\JFW\\Desktop\\autocoding.sql"));
+            sqlExec.setSrc(new File("F:\\IDEAWorkspace\\autocoding\\ac-web\\src\\test\\resources\\db_script\\ac.sql"));
             sqlExec.setOnerror((SQLExec.OnError) (EnumeratedAttribute.getInstance(SQLExec.OnError.class, "abort")));
             sqlExec.setPrint(true);
             sqlExec.setProject(new Project());

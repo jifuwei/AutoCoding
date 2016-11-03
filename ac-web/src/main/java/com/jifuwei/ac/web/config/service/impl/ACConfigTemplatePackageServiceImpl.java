@@ -19,7 +19,7 @@ import java.util.Date;
 @Service("ACConfigTemplatePackageServiceImpl")
 public class ACConfigTemplatePackageServiceImpl implements ACConfigTemplatePackageService {
 
-    @Resource(name = "ACConfigTemplateDaoImpl")
+    @Resource(name = "ACConfigTemplatePackageDaoImpl")
     private ACConfigTemplatePackageDao dataDao = null;
 
     @Override

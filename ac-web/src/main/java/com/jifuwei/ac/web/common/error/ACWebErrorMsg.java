@@ -9,6 +9,8 @@ import com.jifuwei.ac.foundation.error.ACErrorMsg;
 public class ACWebErrorMsg extends ACErrorMsg {
 
     public static final ACWebErrorMsg ERROR_TMM_ILLEGAL_PARAMETER = new ACWebErrorMsg(40031, "模板引擎自定义函数非法参数错误");
+    public static final ACWebErrorMsg ERROR_INIT_APP_DATABASE = new ACWebErrorMsg(40032, "初始化应用数据库脚本出错");
+    public static final ACWebErrorMsg ERROR_DATABASE_IS_EXIST = new ACWebErrorMsg(40033, "数据库已存在");
 
     public ACWebErrorMsg(int errcode, String errmsg) {
         super(errcode, errmsg);
