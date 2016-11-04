@@ -14,6 +14,7 @@ public class MysqlUtil {
     public static Connection getConnection() {
         Connection conn = null;
         try {
+            //TODO:数据库配置需要写入配置文件中
             Class.forName("com.mysql.jdbc.Driver");
             String url = "jdbc:mysql://localhost:3306/autocoding?characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull";
             Properties properties = new Properties();

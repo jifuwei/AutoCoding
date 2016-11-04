@@ -14,42 +14,26 @@ import java.io.File;
 public class AntDbUtil {
     private static final Logger logger = Logger.getLogger(AntDbUtil.class);
 
-    private String driverClass;
-    private String url;
-    private String username;
-    private String password;
-
-    private SQLExec sqlExec = null;
-
-    private static AntDbUtil instance = null;
-
-    private AntDbUtil(String driverClass, String url, String username, String password) {
-        this.driverClass = driverClass;
-        this.url = url;
-        this.username = username;
-        this.password = password;
-
+    /**
+     * ant工具执行数据库脚本文件
+     * @param driverClass
+     * @param url
+     * @param username
+     * @param password
+     * @param file
+     */
+    public static void excuteSqlScriptFile(String driverClass, String url, String username, String password, File file) {
+        logger.info("driverClass: " + driverClass);
+        logger.info("url: " + url);
+        logger.info("username: " + username);
+        logger.info("password: " + password);
         // 初始化ant数据库连接
-        sqlExec = new SQLExec();
+        SQLExec sqlExec = new SQLExec();
         sqlExec.setDriver(driverClass);
         sqlExec.setUrl(url);
         sqlExec.setUserid(username);
         sqlExec.setPassword(password);
         sqlExec.setEncoding("UTF8");
-    }
-
-    public static AntDbUtil getInstance(String driverClass, String url, String username, String password) {
-        if (instance == null) {
-            instance = new AntDbUtil(driverClass, url, username, password);
-        }
-        return instance;
-    }
-
-    public void excuteSqlScriptFile(File file) {
-        logger.info("driverClass: " + driverClass);
-        logger.info("url: " + url);
-        logger.info("username: " + username);
-        logger.info("password: " + password);
         sqlExec.setSrc(file);
         sqlExec.setOnerror((SQLExec.OnError) (EnumeratedAttribute.getInstance(SQLExec.OnError.class, "abort")));
         sqlExec.setPrint(true);

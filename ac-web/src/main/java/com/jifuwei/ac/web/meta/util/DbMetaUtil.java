@@ -1,44 +1,107 @@
-package com.jifuwei.ac.web.meta.dao.impl;
+package com.jifuwei.ac.web.meta.util;
 
-import com.jifuwei.ac.foundation.dao.IDaoImpl;
 import com.jifuwei.ac.foundation.error.ACErrorMsg;
 import com.jifuwei.ac.foundation.exception.ACDaoException;
 import com.jifuwei.ac.util.db.MysqlUtil;
-import com.jifuwei.ac.web.meta.dao.ACDbMetaInfoDao;
 import com.jifuwei.ac.web.meta.data.ACDbColumnMetaInfoData;
 import com.jifuwei.ac.web.meta.data.ACDbExportedKeyMetaInfoData;
 import com.jifuwei.ac.web.meta.data.ACDbPrimaryKeyMetaInfoData;
 import com.jifuwei.ac.web.meta.data.ACDbTableMetaInfoData;
 import com.jifuwei.ac.web.meta.data.constant.DbMetaInfoConstant;
 import com.jifuwei.ac.web.meta.data.po.ACDbMetaInfoPO;
-import org.springframework.stereotype.Repository;
+import org.apache.log4j.Logger;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
- * 抓取数据库连接信息实现类
- * Created by JFW on 2016/10/11.
+ * 查询数据库元数据信息工具类
+ * Created by JFW on 2016/11/4.
  */
-@Repository("ACDbMetaInfoDaoImpl")
-public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACDbMetaInfoDao {
+public class DbMetaUtil {
+    private static final Logger logger = Logger.getLogger(DbMetaUtil.class);
 
-    public ACDbMetaInfoDaoImpl() {
-        super();
-        this.tableName = "";
-        this.tableKeys = new String[]{};
+    private String driverClass;
+    private String url;
+    private String username;
+    private String password;
+
+    //默认使用的数据库连接
+    private JdbcTemplate defaultJdbcTemplate = null;
+
+    //获取表注解专用连接
+    private Connection connection = null;
+
+    public DbMetaUtil(String driverClass, String url, String username, String password) {
+        this.driverClass = driverClass;
+        this.url = url;
+        this.username = username;
+        this.password = password;
+
+        try {
+            this.defaultJdbcTemplate = new JdbcTemplate(new SimpleDriverDataSource((java.sql.Driver) Class.forName(this.driverClass).newInstance(), this.url, this.username, this.password));
+            this.connection = getConnection();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    protected String generateWhere(Object[] paramArrayOfObject) {
-        return null;
+    private Connection getConnection() {
+        Connection conn = null;
+        try {
+            Class.forName(this.driverClass);
+            String url = this.url;
+            Properties properties = new Properties();
+            properties.setProperty("user", this.username);
+            properties.setProperty("password", this.password);
+            properties.setProperty("remarks", "true"); //设置可以获取remarks信息
+            properties.setProperty("useInformationSchema", "true");//设置可以获取tables remarks信息
+            conn = DriverManager.getConnection(url, properties);
+            return conn;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    @Override
+    public JdbcTemplate getDefaultJdbcTemplate() {
+        return defaultJdbcTemplate;
+    }
+
+    /**
+     * 判断数据库是否存在
+     * @param db_name
+     * @return
+     */
+    public boolean isExistDataBase(String db_name) {
+        try {
+            String queryDbName = null;
+            Object[] args = {db_name};
+            String sql = "SHOW DATABASES LIKE ?";
+            queryDbName = defaultJdbcTemplate.queryForObject(sql, args, String.class);
+            return db_name.equals(queryDbName) ? true : false;
+        } catch (EmptyResultDataAccessException e) {
+            return false;
+        }
+    }
+
+    /**
+     * 获取数据库元数据信息
+     *
+     * @return
+     */
     public ACDbMetaInfoPO findDbMetaInfo() {
         ACDbMetaInfoPO po = null;
         DatabaseMetaData databaseMetaData = null;
@@ -58,15 +121,25 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
         return po;
     }
 
-    @Override
+    /**
+     * dbmd.getTables（String catalog,String schema,String tableName,String[] types）
+     * String catalog：要获得表所在的编目。"“”"意味着没有任何编目，Null表示所有编目。
+     * String schema：要获得表所在的模式。"“”"意味着没有任何模式，Null表示所有模式。
+     * String tableName：指出要返回表名与该参数匹配的那些表，
+     * String types：一个指出返回何种表的数组。"TABLE"、"VIEW"、"SYSTEM TABLE"， "GLOBAL TEMPORARY"，"LOCAL  TEMPORARY"，"ALIAS"，"SYSNONYM"。
+     * <p/>
+     * return 固定返回10个字段描述信息
+     */
     public List<ACDbTableMetaInfoData> findDbTablesMetaInfo(String catalog, String schema, String tableName, String[] types) {
         List<ACDbTableMetaInfoData> tableMetaInfoList = new ArrayList<ACDbTableMetaInfoData>();
         ACDbTableMetaInfoData tableMetaInfo = null;
         DatabaseMetaData databaseMetaData = null;
         Connection conn = null;
         try {
-            conn = MysqlUtil.getConnection();//此处不用defaultJdbcTemplate，因为无法获取remarks信息
-            databaseMetaData = conn.getMetaData();
+            if (this.connection == null) {
+                this.connection = getConnection();
+            }
+            databaseMetaData = this.connection.getMetaData();
             ResultSet rs = databaseMetaData.getTables(catalog, schema, tableName, types);
             while (rs.next()) {
                 tableMetaInfo = new ACDbTableMetaInfoData();
@@ -95,7 +168,15 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
         return null;
     }
 
-    @Override
+    /**
+     * dbmd.getColumns(String catalog,String schama,String tablename,String columnNamePattern)
+     * String catalog：要获得表所在的编目。"“”"意味着没有任何编目，Null表示所有编目。
+     * String schema：要获得表所在的模式。"“”"意味着没有任何模式，Null表示所有模式。
+     * String tableName：指出要返回表名与该参数匹配的那些表，
+     * String columnNamePattern：列名称模式；它必须与存储在数据库中的列名称匹配
+     * <p/>
+     * return 固定返回23个字段描述信息
+     */
     public List<ACDbColumnMetaInfoData> findDbColumnsMetaInfo(String catalog, String schema, String tablename, String columnNamePattern) {
         List<ACDbColumnMetaInfoData> columnMetaInfoList = new ArrayList<ACDbColumnMetaInfoData>();
         ACDbColumnMetaInfoData columnMetaInfo = null;
@@ -141,7 +222,14 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
         return null;
     }
 
-    @Override
+    /**
+     * dbmd.getPrimaryKeys(String catalog, String schema, String tableName)
+     * String catalog：要获得表所在的编目。"“”"意味着没有任何编目，Null表示所有编目。
+     * String schema：要获得表所在的模式。"“”"意味着没有任何模式，Null表示所有模式。
+     * String tableName：指出要返回表名与该参数匹配的那些表，
+     * <p/>
+     * return 固定返回6个字段描述信息
+     */
     public List<ACDbPrimaryKeyMetaInfoData> findDbPrimaryKeysMetaInfo(String catalog, String schema, String tableName) {
         List<ACDbPrimaryKeyMetaInfoData> primaryKeyMetaInfoList = new ArrayList<ACDbPrimaryKeyMetaInfoData>();
         ACDbPrimaryKeyMetaInfoData primaryKeyMetaInfo = null;
@@ -170,7 +258,14 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
         return null;
     }
 
-    @Override
+    /**
+     * dbmd.getExportedKeys(String catalog, String schema, String tableName)
+     * String catalog：要获得表所在的编目。"“”"意味着没有任何编目，Null表示所有编目。
+     * String schema：要获得表所在的模式。"“”"意味着没有任何模式，Null表示所有模式。
+     * String tableName：指出要返回表名与该参数匹配的那些表，
+     * <p/>
+     * return 固定返回6个字段描述信息
+     */
     public List<ACDbExportedKeyMetaInfoData> findDbExportedKeysMetaInfo(String catalog, String schema, String tableName) {
         List<ACDbExportedKeyMetaInfoData> exportedKeyMetaInfoList = new ArrayList<ACDbExportedKeyMetaInfoData>();
         ACDbExportedKeyMetaInfoData exportedKeyMetaInfo = null;
@@ -205,5 +300,14 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
         return null;
+    }
+
+    /**
+     * 创建数据库
+     * @param db_name
+     */
+    public void createDatabase(String db_name) {
+        String sql = "CREATE DATABASE " + db_name;//TODO:有sql注入危险，使用参数总是报语句错误，未能找到错误原因20161103
+        this.defaultJdbcTemplate.update(sql);
     }
 }

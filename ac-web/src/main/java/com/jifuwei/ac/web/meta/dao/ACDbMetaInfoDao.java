@@ -5,9 +5,8 @@ import com.jifuwei.ac.web.meta.data.ACDbColumnMetaInfoData;
 import com.jifuwei.ac.web.meta.data.ACDbExportedKeyMetaInfoData;
 import com.jifuwei.ac.web.meta.data.ACDbPrimaryKeyMetaInfoData;
 import com.jifuwei.ac.web.meta.data.ACDbTableMetaInfoData;
-import com.jifuwei.ac.web.meta.data.po.*;
+import com.jifuwei.ac.web.meta.data.po.ACDbMetaInfoPO;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -24,6 +23,4 @@ public interface ACDbMetaInfoDao extends IDao<ACDbMetaInfoPO> {
     List<ACDbPrimaryKeyMetaInfoData> findDbPrimaryKeysMetaInfo(String catalog, String schema, String tableName);
 
     List<ACDbExportedKeyMetaInfoData> findDbExportedKeysMetaInfo(String catalog, String schema, String tableName);
-
-    void saveDbInitScript(File dbInitScriptFile);
 }

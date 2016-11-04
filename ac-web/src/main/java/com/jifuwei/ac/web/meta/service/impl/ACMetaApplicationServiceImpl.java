@@ -5,18 +5,25 @@ import com.jifuwei.ac.foundation.exception.ACServiceException;
 import com.jifuwei.ac.web.common.error.ACWebErrorMsg;
 import com.jifuwei.ac.web.config.dao.ACConfigDatasourceDao;
 import com.jifuwei.ac.web.config.data.ACConfigDatasourceData;
+import com.jifuwei.ac.web.meta.dao.ACDbMetaInfoDao;
 import com.jifuwei.ac.web.meta.dao.ACMetaApplicationDao;
+import com.jifuwei.ac.web.meta.dao.ACMetaApplicationTableDao;
+import com.jifuwei.ac.web.meta.dao.ACMetaModuleDao;
+import com.jifuwei.ac.web.meta.data.ACDbTableMetaInfoData;
 import com.jifuwei.ac.web.meta.data.po.ACMetaApplicationPO;
+import com.jifuwei.ac.web.meta.data.po.ACMetaApplicationTablePO;
+import com.jifuwei.ac.web.meta.data.po.ACMetaModulePO;
 import com.jifuwei.ac.web.meta.data.vo.ACMetaApplicationVO;
 import com.jifuwei.ac.web.meta.service.ACMetaApplicationService;
 import com.jifuwei.ac.web.meta.util.AntDbUtil;
+import com.jifuwei.ac.web.meta.util.DbMetaUtil;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.File;
 import java.sql.Timestamp;
-import java.util.Date;
+import java.util.*;
 
 /**
  * 应用信息逻辑层实现类
@@ -31,6 +38,15 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
 
     @Resource(name = "ACConfigDatasourceDaoImpl")
     private ACConfigDatasourceDao datasourceDao = null;
+
+    @Resource(name = "ACDbMetaInfoDaoImpl")
+    private ACDbMetaInfoDao metaInfoDao = null;
+
+    @Resource(name = "ACMetaApplicationTableDaoImpl")
+    private ACMetaApplicationTableDao metaApplicationTableDao = null;
+
+    @Resource(name = "ACMetaModuleDaoImpl")
+    private ACMetaModuleDao metaModuleDao = null;
 
     @Override
     public void save(ACMetaApplicationVO vo) {
@@ -54,19 +70,85 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
      */
     @Override
     public void initAppMetaInfoFromDbScript(ACMetaApplicationVO vo) {
-        //1.依据脚本文件和数据源配置创建数据库
         String appDbScript = vo.getApp_db_script();
         ACConfigDatasourceData datasourceData = datasourceDao.findDatasourceAndDatabaseInfoByDatasourceId(vo.getDatasource_id());
-        initAppDatabase(datasourceData);
+        //TODO:配置文件读取或放入数据库中配置
+        String driverClass = datasourceData.getDatabase_driver();
+        String url = "jdbc:mysql://DB_IP:DB_PORT/mysql?useUnicode=true&characterEncoding=utf-8".replace("DB_IP", datasourceData.getDatasource_ip()).replace("DB_PORT", datasourceData.getDatasource_port());
+        String username = datasourceData.getDb_connect_name();
+        String pwd = datasourceData.getDb_connect_pwd();
+        DbMetaUtil dbMetaUtil = new DbMetaUtil(driverClass, url, username, pwd);
+
+        initAppDatabase(datasourceData, dbMetaUtil);//依据脚本文件和数据源配置创建数据库
+        List<ACMetaApplicationTablePO> metaApplicationTablePOList = initAppDbTables(vo, datasourceData, dbMetaUtil);//依据创建的数据库拉取应用的表信息
+        initAppModules(vo, metaApplicationTablePOList);
     }
 
-    private void initAppDatabase(ACConfigDatasourceData datasourceData) {
+    private void initAppModules(ACMetaApplicationVO vo, List<ACMetaApplicationTablePO> metaApplicationTablePOList) {
+        if (metaApplicationTablePOList == null || metaApplicationTablePOList.size() == 0) {
+            return;
+        }
+
+        Set<String> moduleInfoSet = new HashSet<>();
+        String moduleName = null;
+        String moduleRemarks = null;
+        for (ACMetaApplicationTablePO metaApplicationTablePO : metaApplicationTablePOList) {
+            moduleName = metaApplicationTablePO.getApp_table_name().split("_")[1];//遵循表命名规则
+            moduleRemarks = metaApplicationTablePO.getApp_table_remarks().split("/")[0];
+            moduleInfoSet.add(moduleName + "," + moduleRemarks);
+        }
+
+        List<ACMetaModulePO> metaModulePOList = new ArrayList<>();
+        ACMetaModulePO metaModulePO = null;
+        Timestamp now = new Timestamp(new Date().getTime());
+        for (String moduleInfo : moduleInfoSet) {
+            metaModulePO = new ACMetaModulePO();
+            moduleName = moduleInfo.split(",")[0];
+            moduleRemarks = moduleInfo.split(",")[1];
+            metaModulePO.setApp_id(Integer.valueOf(vo.getApp_id()));
+            metaModulePO.setApp_module_name(moduleName);
+            metaModulePO.setApp_module_remark(moduleRemarks);
+            metaModulePO.setCreate_time(now);
+            metaModulePO.setCreate_by("sys");//TODO:写入登录用户
+
+            metaModulePOList.add(metaModulePO);
+        }
+
+        if (metaModulePOList != null) {
+            metaModuleDao.batchAdd(metaModulePOList);
+        }
+    }
+
+    private List<ACMetaApplicationTablePO> initAppDbTables(ACMetaApplicationVO vo, ACConfigDatasourceData datasourceData, DbMetaUtil dbMetaUtil) {
+        List<ACDbTableMetaInfoData> tableMetaInfoDataList = dbMetaUtil.findDbTablesMetaInfo(datasourceData.getDb_name(), null, "%", new String[]{"TABLE"});
+        List<ACMetaApplicationTablePO> metaApplicationTablePOList = new ArrayList<>();
+        ACMetaApplicationTablePO metaApplicationTablePO = null;
+        Timestamp now = new Timestamp(new Date().getTime());
+        for (ACDbTableMetaInfoData tableMetaInfoData : tableMetaInfoDataList) {
+            metaApplicationTablePO = new ACMetaApplicationTablePO();
+            metaApplicationTablePO.setApp_id(Integer.valueOf(vo.getApp_id()));
+            metaApplicationTablePO.setApp_table_name(tableMetaInfoData.getTableName());
+            metaApplicationTablePO.setApp_table_remarks(tableMetaInfoData.getRemarks());
+            metaApplicationTablePO.setCreate_time(now);
+            metaApplicationTablePO.setCreate_by("sys");//TODO:写入登录用户
+
+            metaApplicationTablePOList.add(metaApplicationTablePO);
+        }
+
+        if (metaApplicationTablePOList.size() > 0) {
+            metaApplicationTableDao.batchAdd(metaApplicationTablePOList);
+            return metaApplicationTablePOList;
+        }
+        return null;
+    }
+
+    private void initAppDatabase(ACConfigDatasourceData datasourceData, DbMetaUtil dbMetaUtil) {
         try {
             //建库
-            if (dataDao.isExistDataBase(datasourceData.getDb_name())) {
+            if (dbMetaUtil.isExistDataBase(datasourceData.getDb_name())) {
                 throw new ACServiceException(ACWebErrorMsg.ERROR_DATABASE_IS_EXIST);
             }
-            dataDao.createDatabase(datasourceData.getDb_name());
+            dbMetaUtil.createDatabase(datasourceData.getDb_name());
 
             //执行脚本
             String driver = datasourceData.getDatabase_driver();
@@ -75,7 +157,7 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
             String username = datasourceData.getDb_connect_name();
             String pwd = datasourceData.getDb_connect_pwd();
 
-            AntDbUtil.getInstance(driver, url, username, pwd).excuteSqlScriptFile(new File("F:\\IDEAWorkspace\\autocoding\\ac-web\\src\\test\\resources\\db_script\\ac.sql"));//TODO:文件路径从配置文件中读取
+            AntDbUtil.excuteSqlScriptFile(driver, url, username, pwd, new File("F:\\IDEAWorkspace\\autocoding\\ac-web\\src\\test\\resources\\db_script\\ac.sql"));//TODO:文件路径从配置文件中读取
         } catch (Exception e) {
             logger.error(e);
             if (e instanceof ACServiceException) {

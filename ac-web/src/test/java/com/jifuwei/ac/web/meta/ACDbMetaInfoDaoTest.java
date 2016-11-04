@@ -7,11 +7,10 @@ import com.jifuwei.ac.web.meta.data.ACDbColumnMetaInfoData;
 import com.jifuwei.ac.web.meta.data.ACDbExportedKeyMetaInfoData;
 import com.jifuwei.ac.web.meta.data.ACDbPrimaryKeyMetaInfoData;
 import com.jifuwei.ac.web.meta.data.ACDbTableMetaInfoData;
-import com.jifuwei.ac.web.meta.data.po.*;
+import com.jifuwei.ac.web.meta.data.po.ACDbMetaInfoPO;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -67,14 +66,6 @@ public class ACDbMetaInfoDaoTest extends BaseTest {
     public void findDbExportedKeysMetaInfoTest() {
         List<ACDbExportedKeyMetaInfoData> dbExportedKeyMetaInfoList = dbMetaInfoDao.findDbExportedKeysMetaInfo(null, null, "ac_valid_test");
         System.out.println(JSON.toJSONString(dbExportedKeyMetaInfoList));
-    }
-
-    /**
-     * ant执行脚本文件-测试
-     */
-    @Test
-    public void saveDbInitScriptTest() {
-        dbMetaInfoDao.saveDbInitScript(new File("C:\\Users\\JFW\\Desktop\\autocoding.sql"));
     }
 
     /**

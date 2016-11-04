@@ -8,7 +8,4 @@ import com.jifuwei.ac.web.meta.data.po.ACMetaApplicationPO;
  * Created by JFW on 2016/11/2.
  */
 public interface ACMetaApplicationDao extends IDao<ACMetaApplicationPO> {
-    void createDatabase(String db_name);
-
-    boolean isExistDataBase(String db_name);
 }
