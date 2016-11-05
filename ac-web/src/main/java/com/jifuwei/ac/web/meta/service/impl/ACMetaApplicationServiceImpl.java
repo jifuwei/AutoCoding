@@ -70,8 +70,12 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
      */
     @Override
     public void initAppMetaInfoFromDbScript(ACMetaApplicationVO vo) {
-        String appDbScript = vo.getApp_db_script();
-        ACConfigDatasourceData datasourceData = datasourceDao.findDatasourceAndDatabaseInfoByDatasourceId(vo.getDatasource_id());
+        ACMetaApplicationPO po = dataDao.getSingle(vo.getPrimaryKeys());
+        if (po == null) {
+            throw new ACServiceException(ACWebErrorMsg.ERROR_APP_DB_NOT_EXIST);
+        }
+
+        ACConfigDatasourceData datasourceData = datasourceDao.findDatasourceAndDatabaseInfoByDatasourceId(po.getDatasource_id());
         //TODO:配置文件读取或放入数据库中配置
         String driverClass = datasourceData.getDatabase_driver();
         String url = "jdbc:mysql://DB_IP:DB_PORT/mysql?useUnicode=true&characterEncoding=utf-8".replace("DB_IP", datasourceData.getDatasource_ip()).replace("DB_PORT", datasourceData.getDatasource_port());
@@ -80,11 +84,21 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
         DbMetaUtil dbMetaUtil = new DbMetaUtil(driverClass, url, username, pwd);
 
         initAppDatabase(datasourceData, dbMetaUtil);//依据脚本文件和数据源配置创建数据库
-        List<ACMetaApplicationTablePO> metaApplicationTablePOList = initAppDbTables(vo, datasourceData, dbMetaUtil);//依据创建的数据库拉取应用的表信息
-        initAppModules(vo, metaApplicationTablePOList);
+        List<ACMetaApplicationTablePO> metaApplicationTablePOList = initAppDbTables(po, datasourceData, dbMetaUtil);//依据创建的数据库拉取应用的表信息
+        initAppModules(po, metaApplicationTablePOList);
     }
 
-    private void initAppModules(ACMetaApplicationVO vo, List<ACMetaApplicationTablePO> metaApplicationTablePOList) {
+    @Override
+    public void generateAppTemplateFilesFromMetaInfo(ACMetaApplicationVO vo) {
+        ACMetaApplicationPO po = dataDao.getSingle(vo.getPrimaryKeys());
+        if (po == null) {
+            throw new ACServiceException(ACWebErrorMsg.ERROR_APP_DB_NOT_EXIST);
+        }
+
+        //List<ACMetaApplicationTableData> metaApplicationTableDataList = metaApplicationTableDao.getMeatApplicationTableDataByAppId(po.getApp_id());
+    }
+
+    private void initAppModules(ACMetaApplicationPO po, List<ACMetaApplicationTablePO> metaApplicationTablePOList) {
         if (metaApplicationTablePOList == null || metaApplicationTablePOList.size() == 0) {
             return;
         }
@@ -105,7 +119,7 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
             metaModulePO = new ACMetaModulePO();
             moduleName = moduleInfo.split(",")[0];
             moduleRemarks = moduleInfo.split(",")[1];
-            metaModulePO.setApp_id(Integer.valueOf(vo.getApp_id()));
+            metaModulePO.setApp_id(po.getApp_id());
             metaModulePO.setApp_module_name(moduleName);
             metaModulePO.setApp_module_remark(moduleRemarks);
             metaModulePO.setCreate_time(now);
@@ -119,14 +133,14 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
         }
     }
 
-    private List<ACMetaApplicationTablePO> initAppDbTables(ACMetaApplicationVO vo, ACConfigDatasourceData datasourceData, DbMetaUtil dbMetaUtil) {
+    private List<ACMetaApplicationTablePO> initAppDbTables(ACMetaApplicationPO po, ACConfigDatasourceData datasourceData, DbMetaUtil dbMetaUtil) {
         List<ACDbTableMetaInfoData> tableMetaInfoDataList = dbMetaUtil.findDbTablesMetaInfo(datasourceData.getDb_name(), null, "%", new String[]{"TABLE"});
         List<ACMetaApplicationTablePO> metaApplicationTablePOList = new ArrayList<>();
         ACMetaApplicationTablePO metaApplicationTablePO = null;
         Timestamp now = new Timestamp(new Date().getTime());
         for (ACDbTableMetaInfoData tableMetaInfoData : tableMetaInfoDataList) {
             metaApplicationTablePO = new ACMetaApplicationTablePO();
-            metaApplicationTablePO.setApp_id(Integer.valueOf(vo.getApp_id()));
+            metaApplicationTablePO.setApp_id(po.getApp_id());
             metaApplicationTablePO.setApp_table_name(tableMetaInfoData.getTableName());
             metaApplicationTablePO.setApp_table_remarks(tableMetaInfoData.getRemarks());
             metaApplicationTablePO.setCreate_time(now);

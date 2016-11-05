@@ -6,8 +6,8 @@ import com.jifuwei.ac.foundation.exception.ACDaoException;
 import com.jifuwei.ac.foundation.exception.ACRuntimeException;
 import com.jifuwei.ac.foundation.exception.ACServiceException;
 import com.jifuwei.ac.foundation.validation.EntityGroup;
+import com.jifuwei.ac.foundation.validation.PrimaryKeyGroup;
 import com.jifuwei.ac.web.common.data.FileTypes;
-import com.jifuwei.ac.web.meta.data.validation.InitAppMetaInfoFromDbScript;
 import com.jifuwei.ac.web.meta.data.vo.ACMetaApplicationVO;
 import com.jifuwei.ac.web.meta.service.ACMetaApplicationService;
 import org.apache.commons.io.FileUtils;
@@ -94,11 +94,41 @@ public class ACMetaApplicationController {
         return fileName;
     }
 
+    /**
+     * 从数据库脚本初始化应用元数据信息
+     * @param vo
+     * @param bindingResult
+     * @return
+     */
     @RequestMapping("/initAppMetaInfoFromDbScript")
-    public ACResponseMsg initAppMetaInfoFromDbScript(@Validated({InitAppMetaInfoFromDbScript.class}) @RequestBody ACMetaApplicationVO vo, BindingResult bindingResult) {
+    public ACResponseMsg initAppMetaInfoFromDbScript(@Validated({PrimaryKeyGroup.class}) @RequestBody ACMetaApplicationVO vo, BindingResult bindingResult) {
         ACResponseMsg msg = new ACResponseMsg();
         try {
             dataService.initAppMetaInfoFromDbScript(vo);
+
+            msg.errcode = ACErrorMsg.CALL_SUCCESS.errcode;
+            msg.errmsg = ACErrorMsg.CALL_SUCCESS.errmsg;
+        } catch (ACServiceException e) {
+            msg = e.getAcErrorMsg().toResponseMsg();
+        } catch (ACDaoException e) {
+            msg = e.getAcErrorMsg().toResponseMsg();
+        } catch (ACRuntimeException e) {
+            msg = e.getAcErrorMsg().toResponseMsg();
+        }
+        return msg;
+    }
+
+    /**
+     * 从元数据信息初始化应用模板文件
+     * @param vo
+     * @param bindingResult
+     * @return
+     */
+    @RequestMapping("/generateAppTemplateFilesFromMetaInfo")
+    public ACResponseMsg generateAppTemplateFilesFromMetaInfo(@Validated({PrimaryKeyGroup.class}) @RequestBody ACMetaApplicationVO vo, BindingResult bindingResult) {
+        ACResponseMsg msg = new ACResponseMsg();
+        try {
+            dataService.generateAppTemplateFilesFromMetaInfo(vo);
 
             msg.errcode = ACErrorMsg.CALL_SUCCESS.errcode;
             msg.errmsg = ACErrorMsg.CALL_SUCCESS.errmsg;

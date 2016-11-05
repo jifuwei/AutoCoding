@@ -28,7 +28,7 @@ public class ACConfigDatasourceDaoImpl extends IDaoImpl<ACConfigDatasourcePO> im
     }
 
     @Override
-    public ACConfigDatasourceData findDatasourceAndDatabaseInfoByDatasourceId(String datasource_id) {
+    public ACConfigDatasourceData findDatasourceAndDatabaseInfoByDatasourceId(Integer datasource_id) {
         Object[] args = {datasource_id};
         String sql = "SELECT cd1.*, cd2.database_desc, cd2.database_driver FROM ac_config_datasource cd1 LEFT JOIN ac_config_db cd2 ON cd1.database_id = cd2.database_id WHERE cd1.datasource_id = ?";
         return defaultJdbcTemplate.queryForObject(sql, args, dataRM);

@@ -10,4 +10,6 @@ public interface ACMetaApplicationService {
     void save(ACMetaApplicationVO vo);
 
     void initAppMetaInfoFromDbScript(ACMetaApplicationVO vo);
+
+    void generateAppTemplateFilesFromMetaInfo(ACMetaApplicationVO vo);
 }
