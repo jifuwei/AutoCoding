@@ -11,6 +11,9 @@ public class ACConfigTemplateData {
     private String template_desc; //模板描述
     private String template_version; //模板版本:v2.3.67
     private Integer template_type; //模板类型：前端、control、dao
+    private String template_file_name; //模板文件名称
+    private String process_file_name; //输出文件名称
+    private String process_path; //输出文件路径
     private Integer is_available; //是否可用
     private Timestamp create_time; //创建时间
     private String create_by; //创建者
@@ -47,6 +50,30 @@ public class ACConfigTemplateData {
 
     public void setTemplate_type(Integer template_type) {
         this.template_type = template_type;
+    }
+
+    public String getTemplate_file_name() {
+        return template_file_name;
+    }
+
+    public void setTemplate_file_name(String template_file_name) {
+        this.template_file_name = template_file_name;
+    }
+
+    public String getProcess_file_name() {
+        return process_file_name;
+    }
+
+    public void setProcess_file_name(String process_file_name) {
+        this.process_file_name = process_file_name;
+    }
+
+    public String getProcess_path() {
+        return process_path;
+    }
+
+    public void setProcess_path(String process_path) {
+        this.process_path = process_path;
     }
 
     public Integer getIs_available() {

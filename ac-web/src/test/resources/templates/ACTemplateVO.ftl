@@ -12,26 +12,29 @@ ${import}
 </#list>
 
 /**
- * 测试VO
- * Created by JFW on 2016/10/6.
+ * ${tableInfo.remarks}VO
+ * Created by AutoCoding on ${.now?string("yyyy/MM/dd")}.
  */
 public class ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO {
 <#list tableInfo.columnMetaInfoList as column>
     <#if tableInfo.isPrimaryField(column.columnName) == true>
-    @NotEmpty(message = "{ACValidTestVO.${dbColumn2JavaBeanTMM(column.columnName, "FIELD")}.NotEmpty}", groups = {PrimaryKeyGroup.class})
-    private String ${dbColumn2JavaBeanTMM(column.columnName, "FIELD")}; //${column.remarks}
+    @NotEmpty(message = "{${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO.${column.columnName}.NotEmpty}", groups = {PrimaryKeyGroup.class})
+    private String ${column.columnName}; //${column.remarks}
+
     <#elseif column.isNullable == 'NO'>
-    @NotEmpty(message = "{ACValidTestVO.${dbColumn2JavaBeanTMM(column.columnName, "FIELD")}.NotEmpty}", groups = {EntityGroup.class})
-    private String ${dbColumn2JavaBeanTMM(column.columnName, "FIELD")}; //${column.remarks}
+    @NotEmpty(message = "{${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO.${column.columnName}.NotEmpty}", groups = {EntityGroup.class})
+    private String ${column.columnName}; //${column.remarks}
+
     <#else>
-    private String ${dbColumn2JavaBeanTMM(column.columnName, "FIELD")}; //${column.remarks}
+    private String ${column.columnName}; //${column.remarks}
+
     </#if>
 </#list>
 
 <#list tableInfo.columnMetaInfoList as column>
-    public void set${dbColumn2JavaBeanTMM(column.columnName, "GET_SET")}(String ${dbColumn2JavaBeanTMM(column.columnName, "FIELD")}) { this.${dbColumn2JavaBeanTMM(column.columnName, "FIELD")} = ${dbColumn2JavaBeanTMM(column.columnName, "FIELD")}; }
+    public void set${column.columnName?cap_first}(String ${column.columnName}) { this.${column.columnName} = ${column.columnName}; }
 
-    public String get${dbColumn2JavaBeanTMM(column.columnName, "GET_SET")}() { return ${dbColumn2JavaBeanTMM(column.columnName, "FIELD")}; }
+    public String get${column.columnName?cap_first}() { return ${column.columnName}; }
 
 </#list>
 
@@ -39,7 +42,7 @@ public class ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO {
         ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO po = new ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO();
         try {
             <#list tableInfo.columnMetaInfoList as column>
-            po.set${dbColumn2JavaBeanTMM(column.columnName, "GET_SET")}(${dbColumnVo2PoTMM(dbColumn2JavaBeanTMM(column.columnName, "FIELD"), column.dataType)});
+            po.set${column.columnName?cap_first}(${dbColumnVo2PoTMM(column.columnName, column.dataType)});
             </#list>
         } catch (Exception e) {
             e.printStackTrace();

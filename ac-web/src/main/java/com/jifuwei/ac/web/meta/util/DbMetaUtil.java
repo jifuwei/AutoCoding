@@ -2,7 +2,6 @@ package com.jifuwei.ac.web.meta.util;
 
 import com.jifuwei.ac.foundation.error.ACErrorMsg;
 import com.jifuwei.ac.foundation.exception.ACDaoException;
-import com.jifuwei.ac.util.db.MysqlUtil;
 import com.jifuwei.ac.web.meta.data.ACDbColumnMetaInfoData;
 import com.jifuwei.ac.web.meta.data.ACDbExportedKeyMetaInfoData;
 import com.jifuwei.ac.web.meta.data.ACDbPrimaryKeyMetaInfoData;
@@ -45,7 +44,6 @@ public class DbMetaUtil {
 
         try {
             this.defaultJdbcTemplate = new JdbcTemplate(new SimpleDriverDataSource((java.sql.Driver) Class.forName(this.driverClass).newInstance(), this.url, this.username, this.password));
-            this.connection = getConnection();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
@@ -105,8 +103,10 @@ public class DbMetaUtil {
     public ACDbMetaInfoPO findDbMetaInfo() {
         ACDbMetaInfoPO po = null;
         DatabaseMetaData databaseMetaData = null;
+        Connection connection = null;
         try {
-            databaseMetaData = this.defaultJdbcTemplate.getDataSource().getConnection().getMetaData();
+            connection = this.defaultJdbcTemplate.getDataSource().getConnection();
+            databaseMetaData = connection.getMetaData();
             po = new ACDbMetaInfoPO();
             po.setUserName(databaseMetaData.getUserName());
             po.setUrl(databaseMetaData.getURL());
@@ -117,7 +117,10 @@ public class DbMetaUtil {
         } catch (SQLException e) {
             this.logger.debug(e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
+        } finally {
+            closeConnection(connection);
         }
+
         return po;
     }
 
@@ -163,7 +166,7 @@ public class DbMetaUtil {
             this.logger.debug(e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         } finally {
-            MysqlUtil.close(conn);
+            closeConnection(conn);
         }
         return null;
     }
@@ -181,8 +184,10 @@ public class DbMetaUtil {
         List<ACDbColumnMetaInfoData> columnMetaInfoList = new ArrayList<ACDbColumnMetaInfoData>();
         ACDbColumnMetaInfoData columnMetaInfo = null;
         DatabaseMetaData databaseMetaData = null;
+        Connection connection = null;
         try {
-            databaseMetaData = this.defaultJdbcTemplate.getDataSource().getConnection().getMetaData();
+            connection = this.defaultJdbcTemplate.getDataSource().getConnection();
+            databaseMetaData = connection.getMetaData();
             ResultSet rs = databaseMetaData.getColumns(catalog, schema, tablename, columnNamePattern);
             while (rs.next()) {
                 columnMetaInfo = new ACDbColumnMetaInfoData();
@@ -218,7 +223,10 @@ public class DbMetaUtil {
         } catch (SQLException e) {
             this.logger.debug(e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
+        } finally {
+            closeConnection(connection);
         }
+
         return null;
     }
 
@@ -234,8 +242,10 @@ public class DbMetaUtil {
         List<ACDbPrimaryKeyMetaInfoData> primaryKeyMetaInfoList = new ArrayList<ACDbPrimaryKeyMetaInfoData>();
         ACDbPrimaryKeyMetaInfoData primaryKeyMetaInfo = null;
         DatabaseMetaData databaseMetaData = null;
+        Connection connection = null;
         try {
-            databaseMetaData = this.defaultJdbcTemplate.getDataSource().getConnection().getMetaData();
+            connection = this.defaultJdbcTemplate.getDataSource().getConnection();
+            databaseMetaData = connection.getMetaData();
             ResultSet rs = databaseMetaData.getPrimaryKeys(catalog, schema, tableName);
             while (rs.next()) {
                 primaryKeyMetaInfo = new ACDbPrimaryKeyMetaInfoData();
@@ -254,7 +264,10 @@ public class DbMetaUtil {
         } catch (SQLException e) {
             this.logger.debug(e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
+        } finally {
+            closeConnection(connection);
         }
+
         return null;
     }
 
@@ -270,8 +283,10 @@ public class DbMetaUtil {
         List<ACDbExportedKeyMetaInfoData> exportedKeyMetaInfoList = new ArrayList<ACDbExportedKeyMetaInfoData>();
         ACDbExportedKeyMetaInfoData exportedKeyMetaInfo = null;
         DatabaseMetaData databaseMetaData = null;
+        Connection connection = null;
         try {
-            databaseMetaData = this.defaultJdbcTemplate.getDataSource().getConnection().getMetaData();
+            connection = this.defaultJdbcTemplate.getDataSource().getConnection();
+            databaseMetaData = connection.getMetaData();
             ResultSet rs = databaseMetaData.getExportedKeys(catalog, schema, tableName);
             while (rs.next()) {
                 exportedKeyMetaInfo = new ACDbExportedKeyMetaInfoData();
@@ -298,7 +313,10 @@ public class DbMetaUtil {
         } catch (SQLException e) {
             this.logger.debug(e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
+        } finally {
+            closeConnection(connection);
         }
+
         return null;
     }
 
@@ -309,5 +327,19 @@ public class DbMetaUtil {
     public void createDatabase(String db_name) {
         String sql = "CREATE DATABASE " + db_name;//TODO:有sql注入危险，使用参数总是报语句错误，未能找到错误原因20161103
         this.defaultJdbcTemplate.update(sql);
+    }
+
+    /**
+     * 关闭数据库连接
+     * @param conn
+     */
+    private void closeConnection(Connection conn) {
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

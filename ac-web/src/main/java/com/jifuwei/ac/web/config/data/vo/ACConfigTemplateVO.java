@@ -23,6 +23,10 @@ public class ACConfigTemplateVO {
     @DecimalMin(value = "1", message = "{ACConfigTemplateVO.templateType.DecimalMin}", groups = {EntityGroup.class})
     private String template_type; //模板类型：前端、control、dao
 
+    private String template_file_name; //模板文件名称
+    private String process_file_name; //输出文件名称
+    private String process_path; //输出文件路径
+
     @NotEmpty(message = "{ACConfigTemplateVO.isAvailable.NotEmpty}", groups = {EntityGroup.class})
     private String is_available; //是否可用
 
@@ -58,6 +62,30 @@ public class ACConfigTemplateVO {
         this.template_type = template_type;
     }
 
+    public String getTemplate_file_name() {
+        return template_file_name;
+    }
+
+    public void setTemplate_file_name(String template_file_name) {
+        this.template_file_name = template_file_name;
+    }
+
+    public String getProcess_file_name() {
+        return process_file_name;
+    }
+
+    public void setProcess_file_name(String process_file_name) {
+        this.process_file_name = process_file_name;
+    }
+
+    public String getProcess_path() {
+        return process_path;
+    }
+
+    public void setProcess_path(String process_path) {
+        this.process_path = process_path;
+    }
+
     public String getIs_available() {
         return is_available;
     }
@@ -76,6 +104,9 @@ public class ACConfigTemplateVO {
         po.setTemplate_desc(this.template_desc);
         po.setTemplate_version(this.template_version);
         po.setTemplate_type(Integer.valueOf(this.template_type));
+        po.setTemplate_file_name(this.template_file_name);
+        po.setProcess_file_name(this.process_file_name);
+        po.setProcess_path(this.process_path);
         po.setIs_available(Integer.valueOf(this.is_available));
 
         return po;

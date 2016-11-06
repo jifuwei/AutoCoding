@@ -1,5 +1,7 @@
 package com.jifuwei.ac.web.meta.data;
 
+import com.jifuwei.ac.util.string.CamelCaseUtil;
+
 import java.sql.Types;
 import java.util.HashSet;
 import java.util.List;
@@ -242,5 +244,16 @@ public class ACDbTableMetaInfoData {
             default:
                 return null;
         }
+    }
+
+    /**
+     * 获取生对应生成的java文件名称
+     * @return
+     */
+    public String getJavaFileName() {
+        int num = this.tableName.indexOf("_");
+        String appName = this.tableName.substring(0, num);
+        String moduleName = CamelCaseUtil.toCapitalizeCamelCase(this.tableName.substring(num + 1, this.tableName.length()));
+        return appName.toUpperCase() + moduleName;
     }
 }

@@ -93,11 +93,6 @@ public class FreemarkTest extends BaseTest {
      */
 //    @Test
     public List<ACDbTableMetaInfoData> findProjectModuleInfo() {
-
-        String domainName = "com.jifuwei";
-        String projectName = "autocoding";
-        String projectNameUpperCase = projectName.toUpperCase();
-
         List<ACDbColumnMetaInfoData> dbColumnMetaInfoList = null;
         List<ACDbPrimaryKeyMetaInfoData> dbPrimaryKeyMetaInfoList = null;
         List<ACDbExportedKeyMetaInfoData> dbExportedKeyMetaInfoList = null;

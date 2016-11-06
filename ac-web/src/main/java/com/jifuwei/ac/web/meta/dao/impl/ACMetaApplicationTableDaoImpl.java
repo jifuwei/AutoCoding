@@ -5,6 +5,8 @@ import com.jifuwei.ac.web.meta.dao.ACMetaApplicationTableDao;
 import com.jifuwei.ac.web.meta.data.po.ACMetaApplicationTablePO;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * 应用信息实现类
  * Created by JFW on 2016/11/2.
@@ -21,5 +23,12 @@ public class ACMetaApplicationTableDaoImpl extends IDaoImpl<ACMetaApplicationTab
     @Override
     protected String generateWhere(Object[] paramArrayOfObject) {
         return null;
+    }
+
+    @Override
+    public List<ACMetaApplicationTablePO> getMeatApplicationTableDataByAppId(Integer app_id) {
+        Object[] args = {app_id};
+        String sql = "SELECT * FROM ac_meta_application_table t WHERE t.app_id = ?";
+        return defaultJdbcTemplate.query(sql, args, this.rm);
     }
 }
