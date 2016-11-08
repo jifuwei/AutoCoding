@@ -4,8 +4,8 @@ import com.jifuwei.ac.foundation.dao.IDao;
 import ${domainName}.${projectName}.${tableInfo.moduleName}.data.po.${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO;
 
 /**
- * 测试test接口类
- * Created by JFW on 2016/10/7.
+ * ${tableInfo.remarks}-数据层接口
+ * Created by AutoCoding on ${.now?string("yyyy/MM/dd")}.
  */
 public interface ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}Dao extends IDao<${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO> {
 }

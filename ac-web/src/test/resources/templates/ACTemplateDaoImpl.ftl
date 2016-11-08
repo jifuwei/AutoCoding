@@ -6,8 +6,8 @@ import ${domainName}.${projectName}.${tableInfo.moduleName}.data.po.${projectNam
 import org.springframework.stereotype.Repository;
 
 /**
- * 测试dao接口实现类
- * Created by JFW on 2016/10/7.
+ * ${tableInfo.remarks}-数据层实现类
+ * Created by AutoCoding on ${.now?string("yyyy/MM/dd")}.
  */
 @Repository("${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}DaoImpl")
 public class ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}DaoImpl extends IDaoImpl<${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO> implements ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}Dao {
@@ -15,7 +15,7 @@ public class ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}DaoIm
     public ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}DaoImpl() {
         super();
         this.tableName = "${tableInfo.tableName}";
-        this.tableKeys = new String[] {"${tableInfo.tableName}"};
+        this.tableKeys = new String[] {${tableInfo.getPrimaryKeys()}};
     }
 
     @Override

@@ -12,7 +12,7 @@ ${import}
 </#list>
 
 /**
- * ${tableInfo.remarks}VO
+ * ${tableInfo.remarks}-VO
  * Created by AutoCoding on ${.now?string("yyyy/MM/dd")}.
  */
 public class ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO {

@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
- * 测试controller
- * Created by JFW on 2016/10/6.
+ * ${tableInfo.remarks}-控制层
+ * Created by AutoCoding on ${.now?string("yyyy/MM/dd")}.
  */
 @RestController
 @RequestMapping("/${tableInfo.moduleName}/${tableInfo.businessTablename}")

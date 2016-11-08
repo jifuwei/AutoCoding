@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 /**
- * 测试test接口实现类
- * Created by JFW on 2016/10/7.
+ * ${tableInfo.remarks}-逻辑层实现类
+ * Created by AutoCoding on ${.now?string("yyyy/MM/dd")}.
  */
 @Service("${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}ServiceImpl")
 public class ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}ServiceImpl implements ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}Service {

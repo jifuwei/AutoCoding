@@ -1,15 +1,22 @@
 package ${domainName}.${projectName}.${tableInfo.moduleName}.data;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+<#list tableInfo.dbColumn2JavaImport() as import>
+${import}
+</#list>
 
 /**
- * 测试Data
- * Created by JFW on 2016/10/6.
+ * ${tableInfo.remarks}-Data
+ * Created by AutoCoding on ${.now?string("yyyy/MM/dd")}.
  */
-public class ACValidTestData {
+public class ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}Data {
+<#list tableInfo.columnMetaInfoList as column>
+    private ${dbColumnDataTypeTMM(column.dataType)} ${column.columnName}; //${column.remarks}
 
+</#list>
+<#list tableInfo.columnMetaInfoList as column>
+    public void set${column.columnName?cap_first}(${dbColumnDataTypeTMM(column.dataType)} ${column.columnName}) { this.${column.columnName} = ${column.columnName}; }
+
+    public ${dbColumnDataTypeTMM(column.dataType)} get${column.columnName?cap_first}() { return ${column.columnName}; }
+
+</#list>
 }

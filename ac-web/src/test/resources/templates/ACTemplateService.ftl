@@ -3,8 +3,8 @@ package ${domainName}.${projectName}.${tableInfo.moduleName}.service;
 import ${domainName}.${projectName}.${tableInfo.moduleName}.data.vo.${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO;
 
 /**
- * 测试test接口
- * Created by JFW on 2016/10/7.
+ * ${tableInfo.remarks}-逻辑层
+ * Created by AutoCoding on ${.now?string("yyyy/MM/dd")}.
  */
 public interface ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}Service {
     void save(${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO vo);

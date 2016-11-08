@@ -256,4 +256,17 @@ public class ACDbTableMetaInfoData {
         String moduleName = CamelCaseUtil.toCapitalizeCamelCase(this.tableName.substring(num + 1, this.tableName.length()));
         return appName.toUpperCase() + moduleName;
     }
+
+    /**
+     * 获取表的主键字符串
+     * @return
+     */
+    public String getPrimaryKeys() {
+        StringBuffer sb = new StringBuffer();
+        for (ACDbPrimaryKeyMetaInfoData primaryKey : primaryKeyMetaInfoList) {
+            sb.append("\"").append(primaryKey.getColumnName()).append("\", ");
+        }
+        sb.delete(sb.length() - 2, sb.length());
+        return sb.toString();
+    }
 }

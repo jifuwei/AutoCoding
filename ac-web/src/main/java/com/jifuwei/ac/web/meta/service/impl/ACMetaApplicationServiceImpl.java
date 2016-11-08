@@ -9,6 +9,8 @@ import com.jifuwei.ac.web.config.dao.ACConfigTemplateDao;
 import com.jifuwei.ac.web.config.data.ACConfigDatasourceData;
 import com.jifuwei.ac.web.config.data.po.ACConfigTemplatePO;
 import com.jifuwei.ac.web.freemark.method.DbColumn2JavaBeanTMM;
+import com.jifuwei.ac.web.freemark.method.DbColumnDataTypeTMM;
+import com.jifuwei.ac.web.freemark.method.DbColumnPo2VoTMM;
 import com.jifuwei.ac.web.freemark.method.DbColumnVo2PoTMM;
 import com.jifuwei.ac.web.meta.dao.ACDbMetaInfoDao;
 import com.jifuwei.ac.web.meta.dao.ACMetaApplicationDao;
@@ -185,6 +187,8 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
             cfg.setSharedVariable("projectNameUpperCase", projectNameUpperCase);
             cfg.setSharedVariable("dbColumn2JavaBeanTMM", new DbColumn2JavaBeanTMM());
             cfg.setSharedVariable("dbColumnVo2PoTMM", new DbColumnVo2PoTMM());
+            cfg.setSharedVariable("dbColumnDataTypeTMM", new DbColumnDataTypeTMM());
+            cfg.setSharedVariable("dbColumnPo2VoTMM", new DbColumnPo2VoTMM());
 
             Template template = null;
             Map<String, Object> root = null;
