@@ -65,7 +65,7 @@ public class DbColumn2JavaImportTMM implements TemplateMethodModelEx {
             case Types.LONGVARCHAR:
                 return null;
             case Types.NUMERIC:
-                return "import java.math.BigDecimal";
+                return "import java.math.BigDecimal;";
             case Types.OTHER:
                 return null;
             case Types.REAL:
@@ -73,9 +73,9 @@ public class DbColumn2JavaImportTMM implements TemplateMethodModelEx {
             case Types.SMALLINT:
                 return null;
             case Types.TIME:
-                return "import java.sql.Time";
+                return "import java.sql.Time;";
             case Types.TIMESTAMP:
-                return "import java.sql.Timestamp";
+                return "import java.sql.Timestamp;";
             case Types.TINYINT:
                 return null;
             case Types.VARBINARY:

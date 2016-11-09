@@ -98,6 +98,7 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
 
     /**
      * 获取数据库连接
+     *
      * @param datasourceData
      * @return
      */
@@ -120,12 +121,13 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
         DbMetaUtil dbMetaUtil = getDbMetaUtil(datasourceData);
 
         List<ACConfigTemplatePO> configTemplateDataList = configTemplateDao.getConfigTemplateDataByPackageId(metaApplicationPO.getPackage_id());
-        List<ACDbTableMetaInfoData> tableMetaInfoDataList= findProjectModuleInfo(datasourceData, dbMetaUtil);
+        List<ACDbTableMetaInfoData> tableMetaInfoDataList = findProjectModuleInfo(datasourceData, dbMetaUtil);
         generateAppTemplateFiles(metaApplicationPO, configTemplateDataList, tableMetaInfoDataList);
     }
 
     /**
      * 查询数据库元数据信息
+     *
      * @param datasourceData
      * @param dbMetaUtil
      * @return
@@ -166,6 +168,7 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
 
     /**
      * 生成模板文件
+     *
      * @param metaApplicationTablePO
      * @param configTemplateDataList
      * @param metaApplicationTablePOList
@@ -190,6 +193,26 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
             cfg.setSharedVariable("dbColumnDataTypeTMM", new DbColumnDataTypeTMM());
             cfg.setSharedVariable("dbColumnPo2VoTMM", new DbColumnPo2VoTMM());
 
+            //generateProjectBaseFiles(cfg, metaApplicationPO);//渲染生成项目基础文件
+            generateAppJavaFiles(cfg, configTemplateDataList, tableMetaInfoDataList);//渲染生成java类文件
+        } catch (IOException e) {
+            logger.error(e);
+            throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_FILE);
+        } catch (TemplateModelException e) {
+            logger.error(e);
+            throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_FILE);
+        }
+    }
+
+    private void generateProjectBaseFiles(Configuration cfg, ACMetaApplicationPO metaApplicationPO) {
+        //生成mvn webapp project基础目录结构
+        String[] baseFileDirectorysArr = {"src/main/java/", "src/main/resources/", "src/mian/webapp/META-INF", "src/mian/webapp/WEB-INF"};
+        String[] baseFilesArr = {"pom.xml", "context.xml", "src/mian/webapp/META-INF", "src/mian/webapp/WEB-INF"};
+
+    }
+
+    private void generateAppJavaFiles(Configuration cfg, List<ACConfigTemplatePO> configTemplateDataList, List<ACDbTableMetaInfoData> tableMetaInfoDataList) {
+        try {
             Template template = null;
             Map<String, Object> root = null;
             OutputStreamWriter out = null;
@@ -208,18 +231,18 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
                     if (!file.exists()) {
                         file.mkdirs();
                     }
-                    out = new OutputStreamWriter(new FileOutputStream(directoryPath + fileName),"UTF-8");//输出中文编码设置
+                    out = new OutputStreamWriter(new FileOutputStream(directoryPath + fileName), "UTF-8");//输出中文编码设置
                     template.process(root, out);
                 }
             }
 
             out.flush();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TemplateModelException e) {
-            e.printStackTrace();
+            logger.error(e);
+            throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_FILE);
         } catch (TemplateException e) {
-            e.printStackTrace();
+            logger.error(e);
+            throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_RENDEX);
         }
     }
 
@@ -260,6 +283,7 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
 
     /**
      * 初始化应用表信息
+     *
      * @param po
      * @param datasourceData
      * @param dbMetaUtil
@@ -290,6 +314,7 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
 
     /**
      * 初始化应用脚本
+     *
      * @param datasourceData
      * @param dbMetaUtil
      */

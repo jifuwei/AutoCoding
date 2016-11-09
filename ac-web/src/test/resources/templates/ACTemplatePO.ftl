@@ -1,5 +1,7 @@
 package ${domainName}.${projectName}.${tableInfo.moduleName}.data.po;
 
+import com.jifuwei.ac.foundation.error.ACErrorMsg;
+import com.jifuwei.ac.foundation.exception.ACServiceException;
 import ${domainName}.${projectName}.${tableInfo.moduleName}.data.vo.${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO;
 
 <#list tableInfo.dbColumn2JavaImport() as import>
@@ -25,7 +27,7 @@ public class ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO {
         ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO vo = new ${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO();
         try {
             <#list tableInfo.columnMetaInfoList as column>
-            po.set${column.columnName?cap_first}(${dbColumnPo2VoTMM(column.columnName, column.dataType)});
+            vo.set${column.columnName?cap_first}(${dbColumnPo2VoTMM(column.columnName, column.dataType)});
             </#list>
         } catch (Exception e) {
             e.printStackTrace();

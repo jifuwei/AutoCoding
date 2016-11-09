@@ -12,6 +12,8 @@ public class ACWebErrorMsg extends ACErrorMsg {
     public static final ACWebErrorMsg ERROR_INIT_APP_DATABASE = new ACWebErrorMsg(40032, "初始化应用数据库脚本出错");
     public static final ACWebErrorMsg ERROR_DATABASE_IS_EXIST = new ACWebErrorMsg(40033, "数据库已存在");
     public static final ACWebErrorMsg ERROR_APP_DB_NOT_EXIST = new ACWebErrorMsg(40034, "应用数据库不存在");
+    public static final ACWebErrorMsg ERROR_TEMPLATE_FILE = new ACWebErrorMsg(40035, "模板目录加载失败");
+    public static final ACWebErrorMsg ERROR_TEMPLATE_RENDEX = new ACWebErrorMsg(40036, "模板渲染失败");
 
     public ACWebErrorMsg(int errcode, String errmsg) {
         super(errcode, errmsg);
