@@ -66,7 +66,7 @@
     <bean id="bindingResultAOP" class="com.jifuwei.ac.foundation.aop.BindingResultAOP"/>
     <aop:config>
         <aop:pointcut id="bindingResultAOPPointcut"
-                      expression="execution(* com.jifuwei.ac.web.*.controller.*Controller.*(..) )"/>
+                      expression="execution(* ${domainName}.${projectName}.*.controller.*Controller.*(..) )"/>
         <aop:aspect id="controllerVaildAspect" ref="bindingResultAOP">
             <aop:around method="aroundMethod" pointcut-ref="bindingResultAOPPointcut"/>
         </aop:aspect>

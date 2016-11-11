@@ -27,12 +27,21 @@ import com.jifuwei.ac.web.meta.data.vo.ACMetaApplicationVO;
 import com.jifuwei.ac.web.meta.service.ACMetaApplicationService;
 import com.jifuwei.ac.web.meta.util.AntDbUtil;
 import com.jifuwei.ac.web.meta.util.DbMetaUtil;
+import freemarker.cache.FileTemplateLoader;
+import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.TemplateLoader;
+import freemarker.core.ParseException;
 import freemarker.template.*;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -175,8 +184,28 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
      */
     private void generateAppTemplateFiles(ACMetaApplicationPO metaApplicationPO, List<ACConfigTemplatePO> configTemplateDataList, List<ACDbTableMetaInfoData> tableMetaInfoDataList) {
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_25);
+        Properties prop = null;
         try {
-            cfg.setDirectoryForTemplateLoading(new File("F:\\IDEAWorkspace\\autocoding\\ac-web\\src\\test\\resources\\templates\\"));//TODO:模板文件路径从配置文件读取
+            prop = PropertiesLoaderUtils.loadAllProperties("config.properties");
+
+            initFreemarkConfig(cfg, prop, metaApplicationPO);//初始化模板配置
+            generateProjectBaseFiles(cfg, prop, metaApplicationPO);//渲染生成项目基础文件
+            generateAppJavaFiles(cfg, configTemplateDataList, tableMetaInfoDataList, metaApplicationPO);//渲染生成java类文件
+        } catch (IOException e) {
+            logger.error(e);
+            throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_FILE);
+        }
+    }
+
+    private void initFreemarkConfig(Configuration cfg, Properties prop, ACMetaApplicationPO metaApplicationPO) {
+        try {
+            // 依据配置文件加载相应的模板文件
+            String projectType = (String) prop.get("app.config.project");
+            FileTemplateLoader projectFTL = new FileTemplateLoader(new File("F:/IDEAWorkspace/autocoding/ac-web/src/main/resources/project-templates/" + projectType + "/temps/"));//TODO:加入配置文件内
+            FileTemplateLoader javaFTL = new FileTemplateLoader(new File("F:/IDEAWorkspace/autocoding/ac-web/src/test/resources/templates/"));
+            TemplateLoader[] templateLoaders = new TemplateLoader[]{projectFTL, javaFTL};
+            MultiTemplateLoader mtl = new MultiTemplateLoader(templateLoaders);
+            cfg.setTemplateLoader(mtl);
             cfg.setDefaultEncoding("UTF-8");
             cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
             cfg.setLogTemplateExceptions(false);
@@ -192,9 +221,6 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
             cfg.setSharedVariable("dbColumnVo2PoTMM", new DbColumnVo2PoTMM());
             cfg.setSharedVariable("dbColumnDataTypeTMM", new DbColumnDataTypeTMM());
             cfg.setSharedVariable("dbColumnPo2VoTMM", new DbColumnPo2VoTMM());
-
-            //generateProjectBaseFiles(cfg, metaApplicationPO);//渲染生成项目基础文件
-            generateAppJavaFiles(cfg, configTemplateDataList, tableMetaInfoDataList);//渲染生成java类文件
         } catch (IOException e) {
             logger.error(e);
             throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_FILE);
@@ -204,14 +230,66 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
         }
     }
 
-    private void generateProjectBaseFiles(Configuration cfg, ACMetaApplicationPO metaApplicationPO) {
-        //生成mvn webapp project基础目录结构
-        String[] baseFileDirectorysArr = {"src/main/java/", "src/main/resources/", "src/mian/webapp/META-INF", "src/mian/webapp/WEB-INF"};
-        String[] baseFilesArr = {"pom.xml", "context.xml", "src/mian/webapp/META-INF", "src/mian/webapp/WEB-INF"};
+    private void generateProjectBaseFiles(Configuration cfg, Properties prop, ACMetaApplicationPO metaApplicationPO) {
+        Template template = null;
+        OutputStreamWriter out = null;
+        File file = null;
+        Map<String, Object> root = new HashMap<>();
+        try {
+            //拷贝工程必须文件
+            String projectType = (String) prop.get("app.config.project");
+            String targetFilePath = "F:/IDEAWorkspace/autocoding/ac-web/src/main/resources/project-templates/" + projectType + "/directory";
+            FileUtils.copyDirectory(new File(targetFilePath), new File("G:/ac"));// 拷贝工程必备文件
+            //配置生成工程文件
+            ACConfigDatasourceData datasourceData = datasourceDao.findDatasourceAndDatabaseInfoByDatasourceId(metaApplicationPO.getDatasource_id());
+            root.put("datasource", datasourceData);
+            String[] projectTempPathArr = ((String) prop.get("app.config.project.maven.temps")).split(",");
+            String[] projectFiles = getProjectFilesFromProp(projectTempPathArr);
 
+            String outPath = null;
+            String realName = null;
+            for (int i = 0; i < projectTempPathArr.length; i++) {
+                outPath = projectTempPathArr[i].substring(0, projectTempPathArr[i].lastIndexOf("/") + 1);
+                realName = projectTempPathArr[i].substring(projectTempPathArr[i].lastIndexOf("/") + 1, projectTempPathArr[i].length());
+                template = cfg.getTemplate(projectFiles[i].substring(0, projectFiles[i].lastIndexOf(".")) + ".ftl");
+                file = new File("G:/ac" + outPath);//TODO:输出路径配置
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+                out = new OutputStreamWriter(new FileOutputStream("G:/ac" + outPath + realName), "UTF-8");//TODO:输出路径配置
+                template.process(root, out);
+            }
+
+            out.flush();
+        } catch (MalformedTemplateNameException e) {
+            logger.error(e);
+            throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_project_init);
+        } catch (ParseException e) {
+            logger.error(e);
+            throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_project_init);
+        } catch (TemplateNotFoundException e) {
+            logger.error(e);
+            throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_project_init);
+        } catch (IOException e) {
+            logger.error(e);
+            throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_project_init);
+        } catch (TemplateException e) {
+            logger.error(e);
+            throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_project_init);
+        }
     }
 
-    private void generateAppJavaFiles(Configuration cfg, List<ACConfigTemplatePO> configTemplateDataList, List<ACDbTableMetaInfoData> tableMetaInfoDataList) {
+    private String[] getProjectFilesFromProp(String[] projectTempPathArr) {
+        String[] projectTempsArr = new String[projectTempPathArr.length];
+        int i = 0;
+        for (String path : projectTempPathArr) {
+            projectTempsArr[i++] = path.substring(path.lastIndexOf("/") + 1, path.length());
+        }
+
+        return projectTempsArr;
+    }
+
+    private void generateAppJavaFiles(Configuration cfg, List<ACConfigTemplatePO> configTemplateDataList, List<ACDbTableMetaInfoData> tableMetaInfoDataList, ACMetaApplicationPO metaApplicationPO) {
         try {
             Template template = null;
             Map<String, Object> root = null;
@@ -220,13 +298,17 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
             String fileName = null;
             String directoryPath = null;
             File file = null;
+            String moduleName = null;
+            String domainPath = metaApplicationPO.getGroup_id().replace(".", "/");
+            String appName = metaApplicationPO.getApp_en_name().toLowerCase();
             for (ACDbTableMetaInfoData table : tableMetaInfoDataList) {
                 root = new HashMap<>();
                 root.put("tableInfo", table);
+                moduleName = table.getTableName().split("_")[1];
                 for (ACConfigTemplatePO temp : configTemplateDataList) {
                     template = cfg.getTemplate(temp.getTemplate_file_name());
-                    fileName = temp.getProcess_file_name().replace("${}", table.getJavaFileName());
-                    directoryPath = appFileSavePath + temp.getProcess_path();
+                    fileName = temp.getProcess_file_name().replace("${TABLE_TO_JAVA_FILE}", table.getJavaFileName());
+                    directoryPath = appFileSavePath + temp.getProcess_path().replace("${DOMAIN_PATH}", domainPath).replace("${APP_NAME}", appName).replace("${MODULE_NAME}", moduleName);
                     file = new File(directoryPath);
                     if (!file.exists()) {
                         file.mkdirs();
