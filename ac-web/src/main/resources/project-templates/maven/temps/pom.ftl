@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <description>
-        ${projectName}
+        ${projectZhName}
     </description>
 
     <properties>

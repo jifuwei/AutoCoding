@@ -1,9 +1,9 @@
 package ${domainName}.${projectName}.${tableInfo.moduleName}.data.vo;
 
-import com.jifuwei.ac.foundation.error.ACErrorMsg;
-import com.jifuwei.ac.foundation.exception.ACServiceException;
-import com.jifuwei.ac.foundation.validation.EntityGroup;
-import com.jifuwei.ac.foundation.validation.PrimaryKeyGroup;
+import ACErrorMsg;
+import ACServiceException;
+import EntityGroup;
+import PrimaryKeyGroup;
 import ${domainName}.${projectName}.${tableInfo.moduleName}.data.po.${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO;
 import org.hibernate.validator.constraints.NotEmpty;
 

@@ -63,7 +63,7 @@
     <!--文件上传 end-->
 
     <!-- 切面配置:接口参数校验 -->
-    <bean id="bindingResultAOP" class="com.jifuwei.ac.foundation.aop.BindingResultAOP"/>
+    <bean id="bindingResultAOP" class="com.autocoding.ac.foundation.aop.BindingResultAOP"/>
     <aop:config>
         <aop:pointcut id="bindingResultAOPPointcut"
                       expression="execution(* com.jifuwei.ac.web.*.controller.*Controller.*(..) )"/>

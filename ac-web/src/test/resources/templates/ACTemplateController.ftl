@@ -1,12 +1,12 @@
 package ${domainName}.${projectName}.${tableInfo.moduleName}.controller;
 
-import com.jifuwei.ac.foundation.data.ACResponseMsg;
-import com.jifuwei.ac.foundation.error.ACErrorMsg;
-import com.jifuwei.ac.foundation.exception.ACDaoException;
-import com.jifuwei.ac.foundation.exception.ACRuntimeException;
-import com.jifuwei.ac.foundation.exception.ACServiceException;
-import com.jifuwei.ac.foundation.validation.EntityGroup;
-import com.jifuwei.ac.foundation.validation.PrimaryKeyGroup;
+import ACResponseMsg;
+import ACErrorMsg;
+import ACDaoException;
+import ACRuntimeException;
+import ACServiceException;
+import EntityGroup;
+import PrimaryKeyGroup;
 import ${domainName}.${projectName}.${tableInfo.moduleName}.data.vo.${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO;
 import ${domainName}.${projectName}.${tableInfo.moduleName}.service.${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}Service;
 import org.springframework.validation.BindingResult;

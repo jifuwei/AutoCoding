@@ -1,7 +1,7 @@
 package ${domainName}.${projectName}.${tableInfo.moduleName}.service.impl;
 
-import com.jifuwei.ac.foundation.error.ACErrorMsg;
-import com.jifuwei.ac.foundation.exception.ACServiceException;
+import ACErrorMsg;
+import ACServiceException;
 import ${domainName}.${projectName}.${tableInfo.moduleName}.dao.${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}Dao;
 import ${domainName}.${projectName}.${tableInfo.moduleName}.data.po.${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO;
 import ${domainName}.${projectName}.${tableInfo.moduleName}.data.vo.${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO;

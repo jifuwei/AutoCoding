@@ -1,6 +1,6 @@
 package ${domainName}.${projectName}.${tableInfo.moduleName}.dao;
 
-import com.jifuwei.ac.foundation.dao.IDao;
+import IDao;
 import ${domainName}.${projectName}.${tableInfo.moduleName}.data.po.${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO;
 
 /**

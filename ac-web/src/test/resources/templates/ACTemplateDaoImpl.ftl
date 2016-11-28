@@ -1,6 +1,6 @@
 package ${domainName}.${projectName}.${tableInfo.moduleName}.dao.impl;
 
-import com.jifuwei.ac.foundation.dao.IDaoImpl;
+import IDaoImpl;
 import ${domainName}.${projectName}.${tableInfo.moduleName}.dao.${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}Dao;
 import ${domainName}.${projectName}.${tableInfo.moduleName}.data.po.${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}PO;
 import org.springframework.stereotype.Repository;

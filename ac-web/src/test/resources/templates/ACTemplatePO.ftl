@@ -1,7 +1,7 @@
 package ${domainName}.${projectName}.${tableInfo.moduleName}.data.po;
 
-import com.jifuwei.ac.foundation.error.ACErrorMsg;
-import com.jifuwei.ac.foundation.exception.ACServiceException;
+import ACErrorMsg;
+import ACServiceException;
 import ${domainName}.${projectName}.${tableInfo.moduleName}.data.vo.${projectNameUpperCase}${tableInfo.moduleAndBusinessTableName}VO;
 
 <#list tableInfo.dbColumn2JavaImport() as import>
