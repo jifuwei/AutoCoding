@@ -4,37 +4,38 @@ import com.autocoding.ac.foundation.error.ACErrorMsg;
 import com.autocoding.ac.foundation.exception.ACServiceException;
 import com.autocoding.ac.util.file.PropertiesUtil;
 import com.autocoding.ac.util.string.CamelCaseUtil;
+import com.autocoding.ac.web.common.error.ACWebErrorMsg;
+import com.autocoding.ac.web.config.dao.ACConfigDatasourceDao;
+import com.autocoding.ac.web.config.dao.ACConfigTemplateDao;
 import com.autocoding.ac.web.config.data.ACConfigDatasourceData;
 import com.autocoding.ac.web.config.data.po.ACConfigTemplatePO;
+import com.autocoding.ac.web.freemark.method.DbColumn2JavaBeanTMM;
+import com.autocoding.ac.web.freemark.method.DbColumnDataTypeTMM;
+import com.autocoding.ac.web.freemark.method.DbColumnPo2VoTMM;
+import com.autocoding.ac.web.freemark.method.DbColumnVo2PoTMM;
 import com.autocoding.ac.web.meta.dao.ACDbMetaInfoDao;
 import com.autocoding.ac.web.meta.dao.ACMetaApplicationDao;
 import com.autocoding.ac.web.meta.dao.ACMetaApplicationTableDao;
 import com.autocoding.ac.web.meta.dao.ACMetaModuleDao;
 import com.autocoding.ac.web.meta.data.ACDbColumnMetaInfoData;
 import com.autocoding.ac.web.meta.data.ACDbExportedKeyMetaInfoData;
+import com.autocoding.ac.web.meta.data.ACDbPrimaryKeyMetaInfoData;
+import com.autocoding.ac.web.meta.data.ACDbTableMetaInfoData;
+import com.autocoding.ac.web.meta.data.po.ACMetaApplicationPO;
 import com.autocoding.ac.web.meta.data.po.ACMetaApplicationTablePO;
+import com.autocoding.ac.web.meta.data.po.ACMetaModulePO;
 import com.autocoding.ac.web.meta.data.vo.ACMetaApplicationVO;
 import com.autocoding.ac.web.meta.service.ACMetaApplicationService;
 import com.autocoding.ac.web.meta.util.AntDbUtil;
 import com.autocoding.ac.web.meta.util.DbMetaUtil;
-import com.autocoding.ac.web.common.error.ACWebErrorMsg;
-import com.autocoding.ac.web.config.dao.ACConfigDatasourceDao;
-import com.autocoding.ac.web.config.dao.ACConfigTemplateDao;
-import com.autocoding.ac.web.freemark.method.DbColumn2JavaBeanTMM;
-import com.autocoding.ac.web.freemark.method.DbColumnDataTypeTMM;
-import com.autocoding.ac.web.freemark.method.DbColumnPo2VoTMM;
-import com.autocoding.ac.web.freemark.method.DbColumnVo2PoTMM;
-import com.autocoding.ac.web.meta.data.ACDbPrimaryKeyMetaInfoData;
-import com.autocoding.ac.web.meta.data.ACDbTableMetaInfoData;
-import com.autocoding.ac.web.meta.data.po.ACMetaApplicationPO;
-import com.autocoding.ac.web.meta.data.po.ACMetaModulePO;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.core.ParseException;
 import freemarker.template.*;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -51,7 +52,7 @@ import java.util.*;
  */
 @Service("ACMetaApplicationServiceImpl")
 public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
-    private static final Logger logger = Logger.getLogger(ACMetaApplicationServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ACMetaApplicationServiceImpl.class);
 
     @Resource(name = "ACMetaApplicationDaoImpl")
     private ACMetaApplicationDao dataDao = null;
@@ -192,7 +193,7 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
             generateProjectBaseFiles(cfg, prop, metaApplicationPO);//渲染生成项目基础文件
             generateAppJavaFiles(cfg, configTemplateDataList, tableMetaInfoDataList, metaApplicationPO);//渲染生成java类文件
         } catch (IOException e) {
-            logger.error(e);
+            LOGGER.error("found error", e);
             throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_FILE);
         }
     }
@@ -223,10 +224,10 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
             cfg.setSharedVariable("dbColumnDataTypeTMM", new DbColumnDataTypeTMM());
             cfg.setSharedVariable("dbColumnPo2VoTMM", new DbColumnPo2VoTMM());
         } catch (IOException e) {
-            logger.error(e);
+            LOGGER.error("found error", e);
             throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_FILE);
         } catch (TemplateModelException e) {
-            logger.error(e);
+            LOGGER.error("found error", e);
             throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_FILE);
         }
     }
@@ -263,19 +264,19 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
 
             out.flush();
         } catch (MalformedTemplateNameException e) {
-            logger.error(e);
+            LOGGER.error("found error", e);
             throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_project_init);
         } catch (ParseException e) {
-            logger.error(e);
+            LOGGER.error("found error", e);
             throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_project_init);
         } catch (TemplateNotFoundException e) {
-            logger.error(e);
+            LOGGER.error("found error", e);
             throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_project_init);
         } catch (IOException e) {
-            logger.error(e);
+            LOGGER.error("found error", e);
             throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_project_init);
         } catch (TemplateException e) {
-            logger.error(e);
+            LOGGER.error("found error", e);
             throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_project_init);
         }
     }
@@ -337,10 +338,10 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
 
             out.flush();
         } catch (IOException e) {
-            logger.error(e);
+            LOGGER.error("found error", e);
             throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_FILE);
         } catch (TemplateException e) {
-            logger.error(e);
+            LOGGER.error("found error", e);
             throw new ACServiceException(ACWebErrorMsg.ERROR_TEMPLATE_RENDEX);
         }
     }
@@ -434,7 +435,7 @@ public class ACMetaApplicationServiceImpl implements ACMetaApplicationService {
 
             AntDbUtil.excuteSqlScriptFile(driver, url, username, pwd, new File("F:\\IDEAWorkspace\\autocoding\\ac-web\\src\\test\\resources\\db_script\\ac.sql"));//TODO:文件路径从配置文件中读取
         } catch (Exception e) {
-            logger.error(e);
+            LOGGER.error("found error", e);
             if (e instanceof ACServiceException) {
                 throw (ACServiceException) e;
             }

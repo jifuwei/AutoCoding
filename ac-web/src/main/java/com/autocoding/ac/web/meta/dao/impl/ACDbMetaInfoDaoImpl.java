@@ -52,7 +52,7 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
             po.setDatabaseDriverName(databaseMetaData.getDriverName());
             po.setDatabaseDriverVersion(databaseMetaData.getDriverVersion());
         } catch (SQLException e) {
-            this.logger.debug(e);
+            this.logger.debug("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
         return po;
@@ -87,7 +87,7 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
                 return tableMetaInfoList;
             }
         } catch (SQLException e) {
-            this.logger.debug(e);
+            this.logger.debug("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         } finally {
             MysqlUtil.close(conn);
@@ -135,7 +135,7 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
                 return columnMetaInfoList;
             }
         } catch (SQLException e) {
-            this.logger.debug(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
         return null;
@@ -164,7 +164,7 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
                 return primaryKeyMetaInfoList;
             }
         } catch (SQLException e) {
-            this.logger.debug(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
         return null;
@@ -201,7 +201,7 @@ public class ACDbMetaInfoDaoImpl extends IDaoImpl<ACDbMetaInfoPO> implements ACD
                 return exportedKeyMetaInfoList;
             }
         } catch (SQLException e) {
-            this.logger.debug(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
         return null;

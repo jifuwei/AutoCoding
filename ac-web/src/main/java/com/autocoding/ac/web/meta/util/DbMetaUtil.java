@@ -4,11 +4,12 @@ import com.autocoding.ac.foundation.error.ACErrorMsg;
 import com.autocoding.ac.foundation.exception.ACDaoException;
 import com.autocoding.ac.web.meta.data.ACDbColumnMetaInfoData;
 import com.autocoding.ac.web.meta.data.ACDbExportedKeyMetaInfoData;
-import com.autocoding.ac.web.meta.data.constant.DbMetaInfoConstant;
-import com.autocoding.ac.web.meta.data.po.ACDbMetaInfoPO;
 import com.autocoding.ac.web.meta.data.ACDbPrimaryKeyMetaInfoData;
 import com.autocoding.ac.web.meta.data.ACDbTableMetaInfoData;
-import org.apache.log4j.Logger;
+import com.autocoding.ac.web.meta.data.constant.DbMetaInfoConstant;
+import com.autocoding.ac.web.meta.data.po.ACDbMetaInfoPO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -23,7 +24,7 @@ import java.util.Properties;
  * Created by JFW on 2016/11/4.
  */
 public class DbMetaUtil {
-    private static final Logger logger = Logger.getLogger(DbMetaUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DbMetaUtil.class);
 
     private String driverClass;
     private String url;
@@ -115,7 +116,7 @@ public class DbMetaUtil {
             po.setDatabaseDriverName(databaseMetaData.getDriverName());
             po.setDatabaseDriverVersion(databaseMetaData.getDriverVersion());
         } catch (SQLException e) {
-            this.logger.debug(e);
+            this.LOGGER.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         } finally {
             closeConnection(connection);
@@ -163,7 +164,7 @@ public class DbMetaUtil {
                 return tableMetaInfoList;
             }
         } catch (SQLException e) {
-            this.logger.debug(e);
+            this.LOGGER.debug("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         } finally {
             closeConnection(conn);
@@ -221,7 +222,7 @@ public class DbMetaUtil {
                 return columnMetaInfoList;
             }
         } catch (SQLException e) {
-            this.logger.debug(e);
+            this.LOGGER.debug("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         } finally {
             closeConnection(connection);
@@ -262,7 +263,7 @@ public class DbMetaUtil {
                 return primaryKeyMetaInfoList;
             }
         } catch (SQLException e) {
-            this.logger.debug(e);
+            this.LOGGER.debug("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         } finally {
             closeConnection(connection);
@@ -311,7 +312,7 @@ public class DbMetaUtil {
                 return exportedKeyMetaInfoList;
             }
         } catch (SQLException e) {
-            this.logger.debug(e);
+            this.LOGGER.debug("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         } finally {
             closeConnection(connection);

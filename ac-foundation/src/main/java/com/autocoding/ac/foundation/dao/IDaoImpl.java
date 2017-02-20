@@ -4,7 +4,8 @@ import com.autocoding.ac.foundation.constant.OperateConstant;
 import com.autocoding.ac.foundation.data.ACPageInfo;
 import com.autocoding.ac.foundation.error.ACErrorMsg;
 import com.autocoding.ac.foundation.exception.ACDaoException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -27,7 +28,7 @@ import java.util.Map.Entry;
 
 @Repository
 public abstract class IDaoImpl<Data> implements IDao<Data> {
-    protected Logger logger = Logger.getLogger(super.getClass());
+    protected Logger logger = LoggerFactory.getLogger(super.getClass());
 
     @Autowired
     protected JdbcTemplate defaultJdbcTemplate;
@@ -72,7 +73,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
         try {
             return (insertActor.execute(new BeanPropertySqlParameterSource(d)) > 0);
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -92,7 +93,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
                     return false;
             return true;
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -124,10 +125,10 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
 
         SqlParameterSource ps = new BeanPropertySqlParameterSource(d);
         try {
-            this.logger.debug(sql);
+            this.logger.debug("执行sql为：", sql);
             return (this.namedParameterJdbcTemplate.update(getUpdateWhereCondition(sql), ps) > 0);
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -151,7 +152,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
             return (this.defaultJdbcTemplate.update(getWhereKeysCondition(sql.deleteCharAt(sql.length() - 1)),
                     args) > 0);
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -186,7 +187,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
                     return false;
             return true;
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -220,7 +221,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
             this.defaultJdbcTemplate.batchUpdate(getWhereKeysCondition(sql.deleteCharAt(sql.length() - 1)), params);
             return true;
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -230,7 +231,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
         try {
             return (this.defaultJdbcTemplate.update(getWhereKeysCondition(sql), keys) > 0);
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -261,7 +262,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
                     return false;
             return true;
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -275,7 +276,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
             }
             return null;
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -288,7 +289,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
 
             return (o != 0);
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -298,7 +299,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
             String sql = getSql(null, null, false);
             return this.defaultJdbcTemplate.query(sql, this.rm);
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -309,7 +310,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
             String sql = getSql(null, page, false);
             return this.defaultJdbcTemplate.query(sql, this.rm);
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -320,7 +321,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
 
             return this.namedParameterJdbcTemplate.query(getWhereKeysCondition(sql, keyMap.size()), keyMap, this.rm);
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -330,7 +331,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
             String sql = getSql(null, null, true);
             return ((Integer) this.defaultJdbcTemplate.queryForObject(sql, Integer.class)).intValue();
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -340,7 +341,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
             String sql = getSql(args, null, false);
             return this.defaultJdbcTemplate.query(sql, this.rm);
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -351,7 +352,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
             String sql = getSql(args, page, false);
             return this.defaultJdbcTemplate.query(sql, this.rm);
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -384,7 +385,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
             }
             return this.defaultJdbcTemplate.query(sql.toString(), params, this.rm);
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }
@@ -406,7 +407,7 @@ public abstract class IDaoImpl<Data> implements IDao<Data> {
             String sql = getSql(args, null, true);
             return ((Integer) this.defaultJdbcTemplate.queryForObject(sql, Integer.class)).intValue();
         } catch (DataAccessException e) {
-            this.logger.error(e);
+            this.logger.error("found error", e);
             throw new ACDaoException(ACErrorMsg.ERROR_DATABASE_TECH_EXCEPTION);
         }
     }

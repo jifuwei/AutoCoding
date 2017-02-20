@@ -1,9 +1,10 @@
 package com.autocoding.ac.web.meta.util;
 
-import org.apache.log4j.Logger;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.SQLExec;
 import org.apache.tools.ant.types.EnumeratedAttribute;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -12,7 +13,7 @@ import java.io.File;
  * Created by JFW on 2016/10/13.
  */
 public class AntDbUtil {
-    private static final Logger logger = Logger.getLogger(AntDbUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AntDbUtil.class);
 
     /**
      * ant工具执行数据库脚本文件
@@ -23,10 +24,10 @@ public class AntDbUtil {
      * @param file
      */
     public static void excuteSqlScriptFile(String driverClass, String url, String username, String password, File file) {
-        logger.info("driverClass: " + driverClass);
-        logger.info("url: " + url);
-        logger.info("username: " + username);
-        logger.info("password: " + password);
+        LOGGER.info("driverClass: " + driverClass);
+        LOGGER.info("url: " + url);
+        LOGGER.info("username: " + username);
+        LOGGER.info("password: " + password);
         // 初始化ant数据库连接
         SQLExec sqlExec = new SQLExec();
         sqlExec.setDriver(driverClass);
